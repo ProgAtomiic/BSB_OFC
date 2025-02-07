@@ -14,25 +14,16 @@ public class AlgaSubsystem extends SubsystemBase {
 
     RelativeEncoder linhaEncoder = linha.getEncoder();
     RelativeEncoder intakeEncoder = intake.getEncoder();
-    DutyCycleEncoder abslinha = new DutyCycleEncoder(7);
-    DutyCycleEncoder absintake = new DutyCycleEncoder(6);
 
     PIDController pidi = new PIDController(0, 0, 0);
     private static final ArmFeedforward feedforward = new ArmFeedforward(0, 0, 0, 0);
 
-    double linhaAngulo = abslinha.get() * 360;
-    double intakeAngulo = absintake.get() * 360;
-
-    public static void linhaset(double angulo, double velocidade) {
-        linha.set(feedforward.calculate(angulo, velocidade));
+    public static void linhaset(double velocidade) {
+        linha.set(velocidade);
     }
 
     public static void ligaintake(double velocidade) {
         intake.set(velocidade);
-    }
-
-    public static void linhasetpoint() {
-        linha.set(feedforward.calculate(0, 0.2));
     }
 
     public static void desligaintake() {
