@@ -10,6 +10,7 @@ import org.photonvision.EstimatedRobotPose;
 import org.photonvision.PhotonCamera;
 import org.photonvision.PhotonPoseEstimator;
 import org.photonvision.PhotonPoseEstimator.PoseStrategy;
+import org.photonvision.targeting.PhotonPipelineResult;
 
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
@@ -32,8 +33,8 @@ public class VisionSubsystem extends SubsystemBase{
       // ArducamPoseEstimator.setMultiTagFallbackStrategy(PoseStrategy.LOWEST_AMBIGUITY);
     }
 
-    public Optional<EstimatedRobotPose> getEstimatedPoseLime(Pose2d prevEstimatedRobotPose) {
-      LimelightPoseEstimator.setReferencePose(prevEstimatedRobotPose);
+    public Optional<EstimatedRobotPose> getEstimatedPoseLime() {
+      //LimelightPoseEstimator.setReferencePose(prevEstimatedRobotPose);
     return LimelightPoseEstimator.update(Limelight.getLatestResult());
     }
 
@@ -43,12 +44,15 @@ public class VisionSubsystem extends SubsystemBase{
     }
 
 
-    
+    public PhotonPipelineResult LimeGetLatestResult() {
+      return Limelight.getLatestResult();
+    }
 
     public void periodic(){
+    }
 
-
-
+    public PhotonPipelineResult ArducamGetLatestResult() {
+      return Arducam.getLatestResult();
     }
     
 }

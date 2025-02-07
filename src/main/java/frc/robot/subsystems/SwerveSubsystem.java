@@ -10,6 +10,7 @@ import static edu.wpi.first.units.Units.Meter;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Optional;
 import java.util.function.Supplier;
 
 import org.json.simple.parser.ParseException;
@@ -186,7 +187,7 @@ public void setupPathPlanner(){
       case 0:
         if (aruPose.isPresent() && limePose.isPresent()) {
           double aruAmbiguity = getVision().ArducamGetLatestResult().getBestTarget().getPoseAmbiguity();
-          double limeAmbiguity = getVision().LimeGetLatestResult().getBestTarget().getPoseAmbiguity();
+          double limeAmbiguity = getVision().ArducamGetLatestResult().getBestTarget().getPoseAmbiguity();
           if (aruAmbiguity < limeAmbiguity - 0.05) {
             System.out.println("Arducam A");
             chosenPose = aruPose.get();
