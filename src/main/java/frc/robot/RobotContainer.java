@@ -41,8 +41,8 @@ public class RobotContainer {
   public static final CoralScore m_levelsetL3 = new CoralScore(m_amr, m_elevator, Controle_0, 3);
   public static final CoralScore m_levelsetL4 = new CoralScore(m_amr, m_elevator, Controle_0, 4);
   ////////////////////////////////////////////////////////////////////////////////////////////////////
-  public static final AlinhamentoReef m_alinhamentoreefDIREITA = new AlinhamentoReef('D');
-  public static final AlinhamentoReef m_alinhamentoreefESQUERDA = new AlinhamentoReef('E');
+  // public static final AlinhamentoReef m_alinhamentoreefDIREITA = new AlinhamentoReef('D');
+  // public static final AlinhamentoReef m_alinhamentoreefESQUERDA = new AlinhamentoReef('E');
   ////////////////////////////////////////////////////////////////////////////////////////////////////
   public static final BallTakeOut m_ball_take_out_baixo = new BallTakeOut(m_amr, m_elevator, Controle_0, 1);
   public static final BallTakeOut m_ball_take_out_cima = new BallTakeOut(m_amr, m_elevator, Controle_0, 2);
@@ -77,7 +77,7 @@ public class RobotContainer {
 
   private void configureBindings() {
     drivebase.setDefaultCommand(driveFieldOrientedAngularVelocity);
-    //Controle_0.a().onTrue(drivebase.getPathCommand("Teste"));
+    //Controle_0.getAButton().whenTrue(drivebase.getPathCommand("Teste")); ARRUMAR 
 
     // new Trigger(Axis3::get).onTrue(m_ShootDefault);
     // new Trigger(Axis2::get).onTrue(m_IntakeDefault);
@@ -99,8 +99,11 @@ public class RobotContainer {
       new Trigger(() -> Controle_0.getRawButton(3)).onTrue(m_levelsetL4);
     }
     ////////////////////////////////////////////////////////////////////////////////////////////////////
-    new Trigger(() -> Controle_0.getRawButton(4)).onTrue(m_alinhamentoreefESQUERDA);
-    new Trigger(() -> Controle_0.getRawButton(5)).onTrue(m_alinhamentoreefDIREITA);
+    // new Trigger(() -> Controle_0.getRawButton(4)).onTrue(m_alinhamentoreefESQUERDA);
+    // new Trigger(() -> Controle_0.getRawButton(5)).onTrue(m_alinhamentoreefDIREITA);
+    ////////////////////////////////////////////////////////////////////////////////////////////////////
+    new Trigger(() -> Controle_0.getRawButton(6)).onTrue(m_ball_intake);
+    new Trigger(() -> Controle_0.getRawButton(7)).onTrue(m_ball_shooter);
     ////////////////////////////////////////////////////////////////////////////////////////////////////
     new Trigger(() -> Controle_0.getRawButton(12)).onTrue(m_ball_take_out_cima);
     new Trigger(() -> Controle_0.getRawButton(13)).onTrue(m_ball_take_out_baixo);
