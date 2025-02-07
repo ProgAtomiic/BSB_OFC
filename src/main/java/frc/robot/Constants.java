@@ -40,4 +40,9 @@ public final class Constants {
     public static Transform3d LimelightToCam = new Transform3d(new Translation3d(0.19, 0.0, 0.21), new Rotation3d(0, Math.toRadians(-20),0)); 
     public static Transform3d ArducamToCam = new Transform3d(new Translation3d(-0.26, 0.33, 0.19), new Rotation3d(Math.toRadians(150), Math.toRadians(-60),0));  
  }
+
+ public static class AlinhamentoConstants{
+  public static double Esquerda = 2; //Qual a distancia do centro da tag
+  public static double Direita = 2;
+ }
 }
