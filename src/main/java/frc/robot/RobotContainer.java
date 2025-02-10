@@ -6,14 +6,16 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.SwerveConstants;
+// import frc.robot.commands.teleop.AlinhamentoReef;
 //import frc.robot.commands.teleop.AlinhamentoReef;
-import frc.robot.commands.teleop.BallIntake;
-import frc.robot.commands.teleop.BallShooter;
+// import frc.robot.commands.teleop.BallIntake;
+// import frc.robot.commands.teleop.BallShooter;
 //import frc.robot.commands.teleop.BallTakeOut;
 //import frc.robot.commands.teleop.CoralScore;
-import frc.robot.subsystems.AlgaSubsystem;
+// import frc.robot.subsystems.AlgaSubsystem;
 //import frc.robot.subsystems.ArmSubsystem;
 //import frc.robot.subsystems.ElevatorSubsystem;
 import frc.robot.subsystems.SwerveSubsystem;
@@ -47,10 +49,11 @@ public class RobotContainer {
   public static final BallTakeOut m_ball_take_out_baixo = new BallTakeOut(m_amr, m_elevator, Controle_0, 1);
   public static final BallTakeOut m_ball_take_out_cima = new BallTakeOut(m_amr, m_elevator, Controle_0, 2);
   */
-  public static final AlgaSubsystem m_intake_alga = new AlgaSubsystem();
-  public static final BallIntake m_ball_intake = new BallIntake(m_intake_alga, Controle_0);
-  public static final BallShooter m_ball_shooter = new BallShooter(m_intake_alga, Controle_0);
+  // public static final AlgaSubsystem m_intake_alga = new AlgaSubsystem();
+  // public static final BallIntake m_ball_intake = new BallIntake(m_intake_alga, Controle_0);
+  // public static final BallShooter m_ball_shooter = new BallShooter(m_intake_alga, Controle_0);
   ////////////////////////////////////////////////////////////////////////////////////////////////////
+  // public static final AlinhamentoReef Alinhamento = new AlinhamentoReef(null, null, Controle_0, 0, null, null, null);
   
 
   public RobotContainer() {
@@ -91,31 +94,41 @@ public class RobotContainer {
     /// VIBRAR DO CONTROLE DEVE
     /// SER FEITO FORA.
     /// TEM QUE ADICIONAR A FUNÇÃO DO DETECTOR DE PRESENÇA PRO CANO TAMBÉM.
-    /*  
-    if (true) { // SE O ROBÔ ESTIVER VENDO ALGUMA TAG DE REEF
-      new Trigger(() -> Controle_0.getRawButton(0)).onTrue(m_levelsetL1);
-      new Trigger(() -> Controle_0.getRawButton(1)).onTrue(m_levelsetL2);
-      new Trigger(() -> Controle_0.getRawButton(2)).onTrue(m_levelsetL3);
-      new Trigger(() -> Controle_0.getRawButton(3)).onTrue(m_levelsetL4);
-    }
+     
+    // if (true) { // SE O ROBÔ ESTIVER VENDO ALGUMA TAG DE REEF
+    //   new Trigger(() -> Controle_0.getRawButton(0)).onTrue(m_levelsetL1);
+    //   new Trigger(() -> Controle_0.getRawButton(1)).onTrue(m_levelsetL2);
+    //   new Trigger(() -> Controle_0.getRawButton(2)).onTrue(m_levelsetL3);
+    //   new Trigger(() -> Controle_0.getRawButton(3)).onTrue(m_levelsetL4);
+    // }
     ////////////////////////////////////////////////////////////////////////////////////////////////////
     // new Trigger(() -> Controle_0.getRawButton(4)).onTrue(m_alinhamentoreefESQUERDA);
     // new Trigger(() -> Controle_0.getRawButton(5)).onTrue(m_alinhamentoreefDIREITA);
     ////////////////////////////////////////////////////////////////////////////////////////////////////
-    new Trigger(() -> Controle_0.getRawButton(6)).onTrue(m_ball_intake);
-    new Trigger(() -> Controle_0.getRawButton(7)).onTrue(m_ball_shooter);
-    ////////////////////////////////////////////////////////////////////////////////////////////////////
-    new Trigger(() -> Controle_0.getRawButton(12)).onTrue(m_ball_take_out_cima);
-    new Trigger(() -> Controle_0.getRawButton(13)).onTrue(m_ball_take_out_baixo);
+    // new Trigger(() -> Controle_0.getRawButton(6)).onTrue(m_ball_intake);
+    // new Trigger(() -> Controle_0.getRawButton(7)).onTrue(m_ball_shooter);
+    // ////////////////////////////////////////////////////////////////////////////////////////////////////
+    // new Trigger(() -> Controle_0.getRawButton(12)).onTrue(m_ball_take_out_cima);
+    // new Trigger(() -> Controle_0.getRawButton(13)).onTrue(m_ball_take_out_baixo);
     ////////////////////////////////////////////////////////////////////////////////////////////////////
     
-    */
-    new Trigger(() -> Controle_0.getRawButton(5)).whileTrue(m_ball_intake);
-    new Trigger(() -> Controle_0.getRawButton(6)).whileTrue(m_ball_shooter);
-    new Trigger(() -> Controle_0.getRawButton(1)).whileTrue(m_ball_intake);
-    new Trigger(() -> Controle_0.getRawButton(2)).whileTrue(m_ball_shooter);
+    
+    // new Trigger(() -> Controle_0.getRawButton(1)).whileTrue(m_ball_intake);
+    // new Trigger(() -> Controle_0.getRawButton(2)).whileTrue(m_ball_shooter);
+    // new Trigger(() -> Controle_0.getRawButton(1)).whileTrue(m_ball_intake);
+    // new Trigger(() -> Controle_0.getRawButton(2)).whileTrue(m_ball_shooter);
 
-    
+    // new Trigger(() -> Controle_0.getRawButton(1)).onTrue(Alinhamento);
+    // new Trigger(() -> Controle_0.getRawButton(2)).onTrue(Alinhamento);    
+    // new Trigger(() -> Controle_0.getRawButton(3)).onTrue(Alinhamento);
+    // new Trigger(() -> Controle_0.getRawButton(4)).onTrue(Alinhamento);  
+    // new Trigger(() -> Controle_0.getRawButton(5)).onTrue(Alinhamento);
+    // new Trigger(() -> Controle_0.getRawButton(6)).onTrue(Alinhamento);  
+
+
+
+
+
 
   // public Command getAutonomousCommand() {
   //   return drivebase.getAutonomousCommand("Auto1");

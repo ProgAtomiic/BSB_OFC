@@ -14,6 +14,10 @@ import org.photonvision.targeting.PhotonPipelineResult;
 
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
+import edu.wpi.first.math.util.Units;
+import edu.wpi.first.networktables.NetworkTable;
+import edu.wpi.first.networktables.NetworkTableEntry;
+import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.VisaoConstants;
 
@@ -22,24 +26,30 @@ public class VisionSubsystem extends SubsystemBase{
     
     static AprilTagFieldLayout aprilTagFieldLayout = AprilTagFieldLayout.loadField(AprilTagFields.k2024Crescendo);
     
-    static PhotonCamera Limelight = new PhotonCamera("Limelight");
+    public static PhotonCamera Limelight = new PhotonCamera("Limelight");
     private PhotonPoseEstimator LimelightPoseEstimator = new PhotonPoseEstimator(aprilTagFieldLayout, PoseStrategy.LOWEST_AMBIGUITY, VisaoConstants.LimelightToCam); //TESTAR MULTI_TAG PNP
     
-    static PhotonCamera Arducam = new PhotonCamera("Arducam");
+    public static PhotonCamera Arducam = new PhotonCamera("Arducam");
     private PhotonPoseEstimator ArducamPoseEstimator = new PhotonPoseEstimator(aprilTagFieldLayout, PoseStrategy.LOWEST_AMBIGUITY, VisaoConstants.ArducamToCam); //TESTAR MULTI_TAG PNP
+    
+    // how many degrees back is your limelight rotated from perfectly vertical?
+    double AnguloMontagemCamera = 25.0; 
+    // distance from the center of the Limelight lens to the floor
+    double AlturaLenteCamera = 20.0; 
+    // distance from the target to the floor
+    double AlturaAlvo = 60.0; 
 
+    double distanceFromLimelightToGoalInches;
     public VisionSubsystem(){
       // LimelightPoseEstimator.setMultiTagFallbackStrategy(PoseStrategy.LOWEST_AMBIGUITY);
       // ArducamPoseEstimator.setMultiTagFallbackStrategy(PoseStrategy.LOWEST_AMBIGUITY);
     }
 
     public Optional<EstimatedRobotPose> getEstimatedPoseLime() {
-      //LimelightPoseEstimator.setReferencePose(prevEstimatedRobotPose);
     return LimelightPoseEstimator.update(Limelight.getLatestResult());
     }
 
     public Optional<EstimatedRobotPose> getEstimatedPoseArducam( ) {
-      //ArducamPoseEstimator.setReferencePose(prevEstimatedRobotPose);
     return ArducamPoseEstimator.update(Arducam.getLatestResult());
     }
 
@@ -53,6 +63,12 @@ public class VisionSubsystem extends SubsystemBase{
 
     public PhotonPipelineResult ArducamGetLatestResult() {
       return Arducam.getLatestResult();
+    }
+
+    public double DistanciaDaTag(PhotonCamera Camera){
+    //calculate distance
+      return  distanceFromLimelightToGoalInches = (AlturaAlvo - AlturaLenteCamera) / Math.tan(Units.degreesToRadians((AnguloMontagemCamera + Camera.getLatestResult().getBestTarget().pitch)));
+
     }
     
 }

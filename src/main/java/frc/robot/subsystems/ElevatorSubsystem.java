@@ -39,7 +39,7 @@
 
 //     public static void ligarelevador(double velinterno, double velexterno) {
 //         elevadorint.set(feedforward.calculate(velinterno));
-//         elevadorext.set(feedforward.calculate(velexterno));
+//         elevadorext.set(feedforward.calculate(velxterno));
 //     }
 
 //     public static void ligaelevador_externo(double velocidade) {
@@ -81,6 +81,7 @@
 //     }
 
 //     public void periodic() {
+
 //         // This method will be called once per scheduler run
 //     }
 

@@ -87,9 +87,9 @@ public class Robot extends TimedRobot {
   @Override
   public void teleopPeriodic() {
     if(Controle.getAButton() == true){
-      Intake.set(0.7);
+      Intake.set(0.8);
     }else if (Controle.getBButton() == true){
-      Intake.set(-0.7);
+      Intake.set(-0.8);
     } else{
       Intake.set(0);
     }
