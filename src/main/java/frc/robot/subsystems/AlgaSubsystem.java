@@ -5,6 +5,7 @@ import com.revrobotics.spark.SparkMax;
 
 import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
@@ -14,6 +15,10 @@ public class AlgaSubsystem extends SubsystemBase {
 
     RelativeEncoder linhaEncoder = linha.getEncoder();
     RelativeEncoder intakeEncoder = intake.getEncoder();
+
+    static DigitalInput TemAlga = new DigitalInput(0);
+
+    
 
     PIDController pidi = new PIDController(0, 0, 0);
     private static final ArmFeedforward feedforward = new ArmFeedforward(0, 0, 0, 0);
@@ -32,6 +37,10 @@ public class AlgaSubsystem extends SubsystemBase {
 
     public static void desligalinha() {
         linha.set(0);
+    }
+
+    public static boolean TemAlga(){
+        return TemAlga.get();
     }
 
     public boolean exampleCondition() {

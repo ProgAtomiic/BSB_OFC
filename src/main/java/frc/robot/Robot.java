@@ -4,14 +4,15 @@
 
 package frc.robot;
 
-import com.revrobotics.spark.SparkMax;
-import com.revrobotics.spark.SparkLowLevel.MotorType;
+import java.util.ResourceBundle.Control;
+import java.util.prefs.Preferences;
 
 import edu.wpi.first.wpilibj.TimedRobot;
-import edu.wpi.first.wpilibj.XboxController;
-import edu.wpi.first.wpilibj.motorcontrol.Spark;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import frc.robot.Constants.OperatorConstants;
+import frc.robot.subsystems.ArmSubsystem;
+import edu.wpi.first.wpilibj.XboxController;
 
 /**
  * The methods in this class are called automatically corresponding to each mode, as described in
@@ -19,20 +20,21 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
  * this project, you must also update the Main.java file in the project.
  */
 public class Robot extends TimedRobot {
+    Preferences prefs;
+    
+    private static final XboxController Controle_0 = new XboxController(OperatorConstants.ControlePrincipal);
   private Command m_autonomousCommand;
-  private XboxController Controle;
   private final RobotContainer m_robotContainer;
-  SparkMax Intake = new SparkMax(17, MotorType.kBrushless);
-  SparkMax Linha = new SparkMax(51, MotorType.kBrushless);
+
   /**
    * This function is run when the robot is first started up and should be used for any
    * initialization code.
    */
   public Robot() {
+
     // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
     // autonomous chooser on the dashboard.
     m_robotContainer = new RobotContainer();
-    Controle = new XboxController(0);
   }
 
   /**
@@ -74,6 +76,8 @@ public class Robot extends TimedRobot {
 
   @Override
   public void teleopInit() {
+    ArmSubsystem.reset_motor();
+    
     // This makes sure that the autonomous stops running when
     // teleop starts running. If you want the autonomous to
     // continue until interrupted by another command, remove
@@ -86,6 +90,7 @@ public class Robot extends TimedRobot {
   /** This function is called periodically during operator control. */
   @Override
   public void teleopPeriodic() {
+    /* 
     if(Controle.getAButton() == true){
       Intake.set(0.7);
     }else if (Controle.getBButton() == true){
@@ -100,8 +105,18 @@ public class Robot extends TimedRobot {
     } else{
       Linha.set(0);
     }
+*/
 
-  }
+    if (Controle_0.getAButton() == true){
+      ArmSubsystem.LigarServo(0.1);
+    }
+    else if (Controle_0.getBButton() == true){
+      ArmSubsystem.LigarServo(-0.1);
+    }
+    else{
+      ArmSubsystem.DesligarServo();
+    }
+}
 
   @Override
   public void testInit() {

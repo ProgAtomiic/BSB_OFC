@@ -36,7 +36,7 @@ public class BallIntake extends Command {
 
   @Override
   public boolean isFinished() {
-    return false;
+    return Controle_0.getRawAxis(2) > 0.25 || AlgaSubsystem.TemAlga();
   }
 
 }

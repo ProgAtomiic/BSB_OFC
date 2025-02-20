@@ -1,61 +1,113 @@
-// package frc.robot.subsystems;
+package frc.robot.subsystems;
 
-// import com.revrobotics.RelativeEncoder;
-// import com.revrobotics.spark.SparkMax;
+import com.revrobotics.RelativeEncoder;
+import com.revrobotics.spark.SparkMax;
 
-// import edu.wpi.first.math.controller.ArmFeedforward;
-// import edu.wpi.first.math.controller.PIDController;
-// import edu.wpi.first.wpilibj.DutyCycleEncoder;
+import edu.wpi.first.math.controller.ArmFeedforward;
+import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.wpilibj.Servo;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
-// ////////////////////
-// /// 
-// public class ArmSubsystem {
-//     SparkMax arm = new SparkMax(13, SparkMax.MotorType.kBrushless);
-//     RelativeEncoder encoder = arm.getEncoder();
-//     DutyCycleEncoder absencoder = new DutyCycleEncoder(9);
+////////////////////
+///
+public class ArmSubsystem extends SubsystemBase {
 
-//     PIDController pidi = new PIDController(0, 0, 0);
-//     private final ArmFeedforward feedforward = new ArmFeedforward(0, 0, 0, 0);
-//     double angulo = absencoder.get() * 360;// CONFERIR CONVERSÃO PARA GRAUS
+    public int angulo_alvo = 0;
 
-//     public void angleset(double angulo, double velocidade) {
-//         arm.set(feedforward.calculate(angulo, velocidade));
-//     }
+    static SparkMax arm = new SparkMax(14, SparkMax.MotorType.kBrushless);
+    static RelativeEncoder encoder = arm.getEncoder();
 
-//     public void setpoint() {
-//         arm.set(feedforward.calculate(0, 0.2));
-//     }
+    static Servo ServoMotor = new Servo(1);
 
-//     public void stoparm() {
-//         arm.set(0);
-//     }
+    PIDController pidi = new PIDController(0.04, 0.00, 0.00005);
+    // PIDController pidi = new PIDController(0.04, 0.0001, 0.000005);
+    private final ArmFeedforward feedforward = new ArmFeedforward(0.3, 0.7, 0.45);
 
-//     public boolean exampleCondition() {
-//         // Query some boolean state, such as a digital sensor.
-//         return false;
-//     }
+    public static void reset_motor() {
+        encoder.setPosition(0);
+    }
 
-//     public void periodic() {
-//         // This method will be called once per scheduler run
-//     }
+    public void angleset(double angulo) {
 
-//     public void simulationPeriodic() {
-//         // This method will be called once per scheduler run during simulation
-//     }
+            double vel_max = 1.5;
+            double velocidade = pidi.calculate(angleget(), angulo);
+            double velocidade1 = feedforward.calculate(Math.toRadians(angleget()), velocidade);
+            double soma_velocidade = velocidade + velocidade1;
 
-//     /*
-//      * public void angle1(){ //COMPLETAMENTE ABAIXADA
-//      * //MOVE MOTOR ARM PARA O ANGULO DA GARRA COM O SENSOR DE VALOR ABSOLUTO DE
-//      * MOTOR
-//      * }
-//      * public void angle2(){ //ANGULADA PARA CIMA 1
-//      * //MOVE MOTOR ARM PARA O ANGULO DA GARRA COM O SENSOR DE VALOR ABSOLUTO DE
-//      * MOTOR
-//      * }
-//      * public void angle3(){ //ANGULADA PARA CIMA 2
-//      * //MOVE MOTOR ARM PARA O ANGULO DA GARRA COM O SENSOR DE VALOR ABSOLUTO DE
-//      * MOTOR
-//      * }
-//      */
+            if (Math.abs(soma_velocidade) < vel_max) {
+                arm.setVoltage(soma_velocidade);
+            } else {
+                arm.setVoltage(vel_max * (soma_velocidade / Math.abs(soma_velocidade)));
+            }
+            System.out.print("velocidade");
+            System.out.println(soma_velocidade);
+        
 
-// }
+        // if (ElevatorSubsystem.GetPosicaoElevador() >= 50) {// EM ROTACOES
+        //     double vel_max = 1.5;
+        //     double velocidade = pidi.calculate(angleget(), angulo);
+        //     double velocidade1 = feedforward.calculate(Math.toRadians(angleget()), velocidade);
+        //     double soma_velocidade = velocidade + velocidade1;
+
+        //     if (Math.abs(soma_velocidade) < vel_max) {
+        //         arm.setVoltage(soma_velocidade);
+        //     } else {
+        //         arm.setVoltage(vel_max * (soma_velocidade / Math.abs(soma_velocidade)));
+        //     }
+        //     System.out.print("velocidade");
+        //     System.out.println(soma_velocidade);
+        // } else {
+        //     System.err.println("Baixo demais");
+        // }
+
+    }
+
+    public static void set(double velocidade) {
+        arm.set(velocidade);
+    }
+
+    public double angleget() {
+        return (encoder.getPosition() * 14.4);
+    }
+
+    public void stoparm() {
+        arm.set(0);
+    }
+
+    public static void LigarServo(double Velocidade) {
+        ServoMotor.set(Velocidade);
+    }
+
+    public static void DesligarServo() {
+        ServoMotor.set(0);
+    }
+
+    public boolean exampleCondition() {
+        // Query some boolean state, such as a digital sensor.
+        return false;
+    }
+
+    public void periodic() {
+        // This method will be called once per scheduler run
+    }
+
+    public void simulationPeriodic() {
+        // This method will be called once per scheduler run during simulation
+    }
+
+    /*
+     * public void angle1(){ //COMPLETAMENTE ABAIXADA
+     * //MOVE MOTOR ARM PARA O ANGULO DA GARRA COM O SENSOR DE VALOR ABSOLUTO DE
+     * MOTOR
+     * }
+     * public void angle2(){ //ANGULADA PARA CIMA 1
+     * //MOVE MOTOR ARM PARA O ANGULO DA GARRA COM O SENSOR DE VALOR ABSOLUTO DE
+     * MOTOR
+     * }
+     * public void angle3(){ //ANGULADA PARA CIMA 2
+     * //MOVE MOTOR ARM PARA O ANGULO DA GARRA COM O SENSOR DE VALOR ABSOLUTO DE
+     * MOTOR
+     * }
+     */
+
+}

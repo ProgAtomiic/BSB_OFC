@@ -1,0 +1,54 @@
+{
+  "version": "2025.0",
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 5.38,
+        "y": 5.214
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 5.180341122488177,
+        "y": 5.364453755788012
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 1.141729797979798,
+        "y": 6.911616161616162
+      },
+      "prevControl": {
+        "x": 1.501086463923719,
+        "y": 6.289192158162734
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": null
+    }
+  ],
+  "rotationTargets": [],
+  "constraintZones": [],
+  "pointTowardsZones": [],
+  "eventMarkers": [],
+  "globalConstraints": {
+    "maxVelocity": 3.0,
+    "maxAcceleration": 3.0,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 720.0,
+    "nominalVoltage": 12.0,
+    "unlimited": false
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": -59.99999999999999
+  },
+  "reversed": false,
+  "folder": "Autonomo Central",
+  "idealStartingState": {
+    "velocity": 0,
+    "rotation": -120.619
+  },
+  "useDefaultConstraints": true
+}

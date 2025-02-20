@@ -21,7 +21,9 @@ import edu.wpi.first.math.util.Units;
  */
 public final class Constants {
   public static class OperatorConstants {
-    public static final int kDriverControllerPort = 0;
+    public static final int ControlePrincipal = 0;
+    public static final int ControleSecundario = 1;
+
   }
 
   public final class SwerveConstants{

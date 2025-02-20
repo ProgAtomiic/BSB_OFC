@@ -1,115 +1,119 @@
-// package frc.robot.subsystems;
+package frc.robot.subsystems;
 
-// import com.revrobotics.RelativeEncoder;
-// import com.revrobotics.spark.SparkLowLevel.MotorType;
-// import com.revrobotics.spark.SparkMax;
+import com.revrobotics.RelativeEncoder;
+import com.revrobotics.spark.SparkLowLevel.MotorType;
+import com.revrobotics.spark.SparkMax;
 
-// import edu.wpi.first.math.controller.ElevatorFeedforward;
-// import edu.wpi.first.math.controller.PIDController;
-// import edu.wpi.first.wpilibj.DigitalInput;
-// import edu.wpi.first.wpilibj.DutyCycleEncoder;
-// import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.controller.ElevatorFeedforward;
+import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.DutyCycleEncoder;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj.Preferences;
 
-// public class ElevatorSubsystem extends SubsystemBase {
-//     static DigitalInput fimdecurso1 = new DigitalInput(0); // BAIXO INTERNO
-//     static DigitalInput fimdecurso2 = new DigitalInput(1); // CIMA INTERNO
-//     static DigitalInput fimdecurso3 = new DigitalInput(2); // BAIXO EXTERNO
-//     static DigitalInput fimdecurso4 = new DigitalInput(3); // CIMA EXTERNO
 
-//     static SparkMax elevadorext = new SparkMax(11, MotorType.kBrushless);
-//     static SparkMax elevadorint = new SparkMax(9, MotorType.kBrushless);
-//     static RelativeEncoder encoderint = elevadorext.getEncoder();
-//     static RelativeEncoder encoderext = elevadorint.getEncoder();
-//     static DutyCycleEncoder absencoderint = new DutyCycleEncoder(8);
-//     static DutyCycleEncoder absencoderext = new DutyCycleEncoder(7);
+public class ElevatorSubsystem extends SubsystemBase {
+    // region VARIÁVEIS
+    int meuInt = Preferences.getInt("minhaChave", 0);
+    
+    static DigitalInput FimdeCurso1 = new DigitalInput(0); // BAIXO INTERNO
+    static DigitalInput FimdeCurso2 = new DigitalInput(0); // CIMA INTERNO
 
-//     static double anguloint = absencoderint.get() * 360;
-//     static double anguloext = absencoderext.get() * 360;
+    static SparkMax ElevadorExtD = new SparkMax(15, MotorType.kBrushless);
+    static RelativeEncoder EncoderExtD = ElevadorExtD.getEncoder();
+    static DutyCycleEncoder EncoderAbsExt = new DutyCycleEncoder(0);
 
-//     PIDController pidi = new PIDController(0, 0, 0);
-//     private static final ElevatorFeedforward feedforward = new ElevatorFeedforward(0, 0, 0, 0);
 
-//     private double pidvoltage = 0;
-//     private double feedforwardVoltage = 0;
 
-//     public ElevatorSubsystem() {
-//     }
+    static DigitalInput TemCoral = new DigitalInput(0);
 
-//     // FAZER FUNÇÃO DE RODAR POR GRAUS (FAZER COM UM WHILE)
 
-//     public static void ligarelevador(double velinterno, double velexterno) {
-//         elevadorint.set(feedforward.calculate(velinterno));
-//         elevadorext.set(feedforward.calculate(velexterno));
-//     }
+    public static PIDController PID = new PIDController(0, 0, 0);
 
-//     public static void ligaelevador_externo(double velocidade) {
-//         elevadorext.set(feedforward.calculate(velocidade));
-//     }
+    private static final ElevatorFeedforward FeedforwardD = new ElevatorFeedforward(0.36, 0.11, 3.07, 0.02);
 
-//     public static double angulo_elevador_interno() {
-//         return anguloint;
-//     }
+    public static double Ajuste;
+    public static double AjusteFF;
+    public static double AjustePID;
 
-//     public static double angulo_elevador_externo() {
-//         return anguloext;
-//     }
+    private static double UltimaPosicao = 0;
+    private static int ContadorRotacao = 0;
 
-//     public static void intakepeca() {// FAZER POR GRAUS
-//         //
-//         elevadorint.set(feedforward.calculate(0));
-//         //
-//     }
 
-//     public static void setpoint() {
-//         if (fimdecurso1.get() == false) {
-//             elevadorint.set(-0.2);
-//         }
-//         if (fimdecurso3.get() == false) {
-//             elevadorext.set(-0.2);
-//         }
-//     }
+    // endregion
 
-//     public static void settop_interno() {
-//         if (fimdecurso2.get() == false) {
-//             elevadorint.set(0.2);
-//         }
-//     }
+    public ElevatorSubsystem() {
+    }
 
-//     public boolean exampleCondition() {
-//         // Query some boolean state, such as a digital sensor.
-//         return false;
-//     }
 
-//     public void periodic() {
-//         // This method will be called once per scheduler run
-//     }
+    public static void PIDNoFF(double Setpoint) {// TODO: NEGATIVAR O MOTOR(se precisar)
+        Ajuste = FeedforwardD.calculate(PID.calculate(GetPosicaoElevador(), Setpoint));
+        
+        ElevadorExtD.setVoltage(MathUtil.clamp(Ajuste, -1, 1));
 
-//     public void simulationPeriodic() {
-//         // This method will be called once per scheduler run during simulation
-//     }
+    }
 
-//     /*
-//      * public void desce_limite_interno(){
-//      * while(fimdecurso1.get()==false){
-//      * elevadorint.set(-0.2); //DESCE O ELEVADOR INTERNO ATÉ O LIMITE DO FIM DE
-//      * CURSO
-//      * }
-//      * }
-//      * public void sobe_limite_interno(){
-//      * while(fimdecurso2.get()==false){
-//      * elevadorint.set(0.2); //SOBE O ELEVADOR INTERNO ATÉ O LIMITE DO FIM DE CURSO
-//      * }
-//      * }
-//      * public void desce_limite_externo(){
-//      * while(fimdecurso3.get()==false){
-//      * elevadorext.set(-0.2); //DESCE O ELEVADOR INTERNO ATÉ O LIMITE DO FIM DE
-//      * CURSO
-//      * }
-//      * }
-//      * public void sobe_limite_externo(){
-//      * while(fimdecurso4.get()==false){
-//      * elevadorext.set(0.2); //SOBE O ELEVADOR INTERNO ATÉ O LIMITE DO FIM DE CURSO
-//      * }
-//      * }
-//      */
-// }
+    public static void PIDMaisFF(double Setpoint) {// TODO: NEGATIVAR O MOTOR(se precisar)
+        Ajuste = (FeedforwardD.calculate(0.1) + PID.calculate(GetPosicaoElevador(), Setpoint));
+
+        ElevadorExtD.setVoltage(MathUtil.clamp(Ajuste, -1, 1));
+    }
+
+    public static void PIDNoFFMaisFF(double Setpoint) {// TODO: NEGATIVAR O MOTOR(se precisar)
+
+        AjustePID = PID.calculate(GetPosicaoElevador(), Setpoint);
+        AjusteFF = FeedforwardD.calculate(AjustePID);
+
+        ElevadorExtD.setVoltage(MathUtil.clamp((AjustePID + AjusteFF), -1, 1));
+    }
+
+    public static void DesligarElevador() { // TODO: NEGATIVAR O MOTOR(se precisar)
+        ElevadorExtD.set(0);
+        ElevadorExtD.set(0);
+    }
+
+    public static double GetAnguloEncoder() {
+        return GetPosicaoElevador();
+
+    }
+
+    public static double GetPosicaoElevador() {
+        double PosicaoAtual = EncoderAbsExt.get();// Retorna em rotações (0 a 1)
+
+        // Detecta se houve uma rotação completa
+        if (PosicaoAtual < 0.1 && UltimaPosicao > 0.9) { // Se a rotação atual for baixa e ultima foi quase 360, quer dizer que deu uma volta
+            ContadorRotacao++; // Passou de 360° para 0°
+        
+        } else if (PosicaoAtual > 0.9 && UltimaPosicao < 0.1) { // Se a rotação atual for quase 360 e a ultima foi muito baixa
+    
+            ContadorRotacao--; // Passou de 0° para 360° no sentido inverso
+        }
+
+        UltimaPosicao = PosicaoAtual;
+
+        // Calcula a posição total em rotações
+        return ContadorRotacao + PosicaoAtual;
+    }
+
+    public static void DescerLimite() {// TODO: NEGATIVAR O MOTOR(se precisar)
+        if (FimdeCurso1.get() == false) {
+            ElevadorExtD.set(-0.2);
+        }
+    }
+
+    public static void SubirLimite() {// TODO: NEGATIVAR O MOTOR(se precisar)
+        if (FimdeCurso2.get() == false) {
+            ElevadorExtD.set(0.2);
+        }
+    }
+
+    public static boolean Descido() {
+        return FimdeCurso1.get();
+    }
+
+    public static boolean TemCoral() {
+        return TemCoral();
+    }
+
+}

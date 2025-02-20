@@ -38,6 +38,6 @@ public class BallShooter extends Command {
 
   @Override
   public boolean isFinished() {
-    return false;
+    return Controle_0.getRawAxis(3) < 0.25 || AlgaSubsystem.TemAlga() == false;
   }
 }

@@ -14,20 +14,39 @@ import org.photonvision.targeting.PhotonPipelineResult;
 
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.VisaoConstants;
 
 /** Add your docs here. */
 public class VisionSubsystem extends SubsystemBase{
     
-    static AprilTagFieldLayout aprilTagFieldLayout = AprilTagFieldLayout.loadField(AprilTagFields.k2024Crescendo);
+    static AprilTagFieldLayout aprilTagFieldLayout = AprilTagFieldLayout.loadField(AprilTagFields.k2025ReefscapeAndyMark);
     
-    static PhotonCamera Limelight = new PhotonCamera("Limelight");
+    public static PhotonCamera Limelight = new PhotonCamera("Limelight");
     private PhotonPoseEstimator LimelightPoseEstimator = new PhotonPoseEstimator(aprilTagFieldLayout, PoseStrategy.LOWEST_AMBIGUITY, VisaoConstants.LimelightToCam); //TESTAR MULTI_TAG PNP
     
     static PhotonCamera Arducam = new PhotonCamera("Arducam");
     private PhotonPoseEstimator ArducamPoseEstimator = new PhotonPoseEstimator(aprilTagFieldLayout, PoseStrategy.LOWEST_AMBIGUITY, VisaoConstants.ArducamToCam); //TESTAR MULTI_TAG PNP
+    
+    double DistanciaDaTagLime;
+    double AnguloMontagemLime = 25.0; //TODO
+    // distance from the center of the Limelight lens to the floor
+    double AlturaLenteLime = 20.0;
+    // distance from the target to the floor 
+    double AlturaAlvoLime = 60.0; //TODO
 
+    double DistanciaDaTagArducam;
+    double AnguloMontagemArducam = 25.0; //TODO
+    // distance from the center of the Limelight lens to the floor
+    double AlturaLenteArducam = 20.0;
+    // distance from the target to the floor 
+    double AlturaAlvoArducam = 60.0; //TODO
+
+    
+    
+    
+    
     public VisionSubsystem(){
       // LimelightPoseEstimator.setMultiTagFallbackStrategy(PoseStrategy.LOWEST_AMBIGUITY);
       // ArducamPoseEstimator.setMultiTagFallbackStrategy(PoseStrategy.LOWEST_AMBIGUITY);
@@ -54,5 +73,20 @@ public class VisionSubsystem extends SubsystemBase{
     public PhotonPipelineResult ArducamGetLatestResult() {
       return Arducam.getLatestResult();
     }
+
+    public double DistanciaDaTagLime(){
+      //calculate distance
+        return  DistanciaDaTagLime = (AlturaAlvoLime - AlturaLenteLime) / Math.tan(Units.degreesToRadians((AnguloMontagemLime + Limelight.getLatestResult().getBestTarget().pitch)));
+  
+  
+      }
+
+      public double DistanciaDaTagArducam(){
+        //calculate distance
+          return  DistanciaDaTagArducam = (AlturaAlvoArducam - AlturaLenteArducam) / Math.tan(Units.degreesToRadians((AnguloMontagemArducam + Limelight.getLatestResult().getBestTarget().pitch)));
+    
+    
+        }
+  
     
 }
