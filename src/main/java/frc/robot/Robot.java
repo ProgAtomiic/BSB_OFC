@@ -11,8 +11,7 @@ import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.Constants.OperatorConstants;
-import frc.robot.subsystems.ArmSubsystem;
-import edu.wpi.first.wpilibj.XboxController;
+// import edu.wpi.first.wpilibj.XboxController;
 
 /**
  * The methods in this class are called automatically corresponding to each mode, as described in
@@ -22,7 +21,6 @@ import edu.wpi.first.wpilibj.XboxController;
 public class Robot extends TimedRobot {
     Preferences prefs;
     
-    private static final XboxController Controle_0 = new XboxController(OperatorConstants.ControlePrincipal);
   private Command m_autonomousCommand;
   private final RobotContainer m_robotContainer;
 
@@ -76,7 +74,7 @@ public class Robot extends TimedRobot {
 
   @Override
   public void teleopInit() {
-    ArmSubsystem.reset_motor();
+    // ArmSubsystem.reset_motor();
     
     // This makes sure that the autonomous stops running when
     // teleop starts running. If you want the autonomous to
@@ -107,15 +105,15 @@ public class Robot extends TimedRobot {
     }
 */
 
-    if (Controle_0.getAButton() == true){
-      ArmSubsystem.LigarServo(0.1);
-    }
-    else if (Controle_0.getBButton() == true){
-      ArmSubsystem.LigarServo(-0.1);
-    }
-    else{
-      ArmSubsystem.DesligarServo();
-    }
+    // if (Controle_0.getAButton() == true){
+    //   ArmSubsystem.LigarServo(0.1);
+    // }
+    // else if (Controle_0.getBButton() == true){
+    //   ArmSubsystem.LigarServo(-0.1);
+    // }
+    // else{
+    //   ArmSubsystem.DesligarServo();
+    // }
 }
 
   @Override

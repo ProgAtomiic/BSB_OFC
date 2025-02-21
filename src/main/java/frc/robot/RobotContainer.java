@@ -13,17 +13,17 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.Constants.SwerveConstants;
-import frc.robot.commands.teleop.AlinhamentoReef;
-import frc.robot.commands.teleop.IntakeCoral;
-import frc.robot.commands.teleop.arm_command;
+// import frc.robot.commands.teleop.AlinhamentoReef;
+// import frc.robot.commands.teleop.IntakeCoral;
+// import frc.robot.commands.teleop.arm_command;
 //import frc.robot.commands.teleop.AlinhamentoReef;
-//import frc.robot.commands.teleop.BallIntake;
-//import frc.robot.commands.teleop.BallShooter;
-//import frc.robot.commands.teleop.BallTakeOut;
+import frc.robot.commands.teleop.BallIntake;
+import frc.robot.commands.teleop.BallShooter;
+// import frc.robot.commands.teleop.BallTakeOut;
 //import frc.robot.commands.teleop.CoralScore;
-//import frc.robot.subsystems.AlgaSubsystem;
-import frc.robot.subsystems.ArmSubsystem;
-import frc.robot.subsystems.ElevatorSubsystem;
+import frc.robot.subsystems.AlgaSubsystem;
+// import frc.robot.subsystems.ArmSubsystem;
+// import frc.robot.subsystems.ElevatorSubsystem;
 import frc.robot.subsystems.SwerveSubsystem;
 import swervelib.SwerveInputStream;
 
@@ -43,27 +43,27 @@ public class RobotContainer {
    * public static final BallTakeOut m_ball_take_out_cima = new BallTakeOut(m_amr,
    * m_elevator, Controle_0, 2);
    */
-  // public static final AlgaSubsystem m_intake_alga = new AlgaSubsystem();
-  // public static final BallIntake m_ball_intake = new BallIntake(m_intake_alga,
-  // Controle_0);
-  // public static final BallShooter m_ball_shooter = new
-  // BallShooter(m_intake_alga, Controle_0);
+  public static final AlgaSubsystem m_intake_alga = new AlgaSubsystem();
+  public static final BallIntake m_ball_intake = new BallIntake(m_intake_alga,
+  Controle_0);
+  public static final BallShooter m_ball_shooter = new
+  BallShooter(m_intake_alga, Controle_0);
   ////////////////////////////////////////////////////////////////////////////////////////////////////
-  public static final ArmSubsystem m_ArmSubsystem = new ArmSubsystem();
+  // public static final ArmSubsystem m_ArmSubsystem = new ArmSubsystem();
 
-  public static final arm_command m_arm_0 = new arm_command(m_ArmSubsystem, Controle_0, 0);
-  public static final arm_command m_arm_45 = new arm_command(m_ArmSubsystem, Controle_0, 45);
-  public static final arm_command m_arm_90 = new arm_command(m_ArmSubsystem, Controle_0, 90);
-  public static final arm_command m_arm_135 = new arm_command(m_ArmSubsystem, Controle_0, 135);
-  public static final arm_command m_arm_set = new arm_command(m_ArmSubsystem, Controle_0, -1);
+  // public static final arm_command m_arm_0 = new arm_command(m_ArmSubsystem, Controle_0, 0);
+  // public static final arm_command m_arm_45 = new arm_command(m_ArmSubsystem, Controle_0, 45);
+  // public static final arm_command m_arm_90 = new arm_command(m_ArmSubsystem, Controle_0, 90);
+  // public static final arm_command m_arm_135 = new arm_command(m_ArmSubsystem, Controle_0, 135);
+  // public static final arm_command m_arm_set = new arm_command(m_ArmSubsystem, Controle_0, -1);
 
   public static final LevelSet m_LevelSet = new LevelSet();
-  public static final ElevatorSubsystem m_ElevatorSubsystem = new ElevatorSubsystem();
+  // public static final ElevatorSubsystem m_ElevatorSubsystem = new ElevatorSubsystem();
 
   public RobotContainer() {
-    NamedCommands.registerCommand("IntakeCoral", new IntakeCoral(m_ElevatorSubsystem));
-    NamedCommands.registerCommand("AlinhamentoDireita", new AlinhamentoReef(m_ArmSubsystem, m_ElevatorSubsystem, Controle_0, Controle_2, drivebase, "Direita", 0, m_LevelSet)); //ESCOLHER O LADO
-    NamedCommands.registerCommand("AlinhamentoEsquerda", new AlinhamentoReef(m_ArmSubsystem, m_ElevatorSubsystem, Controle_0, Controle_2, drivebase, "Esquerda", 0, m_LevelSet)); //ESCOLHER O LADO
+    // NamedCommands.registerCommand("IntakeCoral", new IntakeCoral(m_ElevatorSubsystem));
+    // NamedCommands.registerCommand("AlinhamentoDireita", new AlinhamentoReef(m_ArmSubsystem, m_ElevatorSubsystem, Controle_0, Controle_2, drivebase, "Direita", 0, m_LevelSet)); //ESCOLHER O LADO
+    // NamedCommands.registerCommand("AlinhamentoEsquerda", new AlinhamentoReef(m_ArmSubsystem, m_ElevatorSubsystem, Controle_0, Controle_2, drivebase, "Esquerda", 0, m_LevelSet)); //ESCOLHER O LADO
 
 
     configureBindings();
@@ -76,7 +76,7 @@ public class RobotContainer {
       .withControllerRotationAxis(Controle_0::getRightX)
       .deadband(SwerveConstants.ZonaMorta)
       .scaleTranslation(0.8)
-      .allianceRelativeControl(false);
+      .allianceRelativeControl(true);
 
   SwerveInputStream driveDirectAngle = DriveVelAngular.copy().withControllerHeadingAxis(
       Controle_0::getRightX,
@@ -89,6 +89,9 @@ public class RobotContainer {
 
   private void configureBindings() {
     drivebase.setDefaultCommand(driveFieldOrientedAngularVelocity);
+    new Trigger(() -> Controle_0.getLeftTriggerAxis() > 0.25).onTrue(m_ball_intake);
+    new Trigger(() -> Controle_0.getRightTriggerAxis() > 0.25).onTrue(m_ball_shooter);
+
     // Controle_0.getAButton().whenTrue(drivebase.getPathCommand("Teste")); ARRUMAR
 
     // new Trigger(Axis3::get).onTrue(m_ShootDefault);
@@ -156,11 +159,11 @@ public class RobotContainer {
     // new JoystickButton(Controle_2, 4).onTrue(new InstantCommand(() ->
     // m_LevelSet.SetLevel(4)));
 
-    if (m_LevelSet.TemLevel() == true) {
-      new AlinhamentoReef(m_ArmSubsystem, m_ElevatorSubsystem, Controle_0, Controle_2, drivebase,
-        m_LevelSet.GetLado(), m_LevelSet.GetLevel(), m_LevelSet).schedule();
+    // if (m_LevelSet.TemLevel() == true) {
+    //   new AlinhamentoReef(m_ArmSubsystem, m_ElevatorSubsystem, Controle_0, Controle_2, drivebase,
+    //     m_LevelSet.GetLado(), m_LevelSet.GetLevel(), m_LevelSet).schedule();
 
-    } 
+    // } 
 
 
 

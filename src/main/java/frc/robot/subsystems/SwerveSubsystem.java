@@ -68,7 +68,7 @@ public class SwerveSubsystem extends SubsystemBase {
   // endregion
 
   public SwerveSubsystem() {
-    SwerveDriveTelemetry.verbosity = TelemetryVerbosity.INFO;
+    SwerveDriveTelemetry.verbosity = TelemetryVerbosity.HIGH;
     try {
       swerveDrive = new SwerveParser(Diretorio).createSwerveDrive(
           SwerveConstants.VelMax,
@@ -81,6 +81,8 @@ public class SwerveSubsystem extends SubsystemBase {
         .resetOdometry(new Pose2d(Units.inchesToMeters(325.68), Units.inchesToMeters(241.64), swerveDrive.getYaw()));
 
     setupPathPlanner();
+    swerveDrive.setHeadingCorrection(true);
+
 
   }
 
@@ -181,6 +183,9 @@ public class SwerveSubsystem extends SubsystemBase {
   }
   // endregion
   public void periodic() {
+    swerveDrive.setChassisDiscretization(true, true, 0.02);
+    swerveDrive.setHeadingCorrection(false);
+    System.out.println(swerveDrive.getOdometryHeading());
     // Optional<EstimatedRobotPose> aruPose = getVision().getEstimatedPoseArducam();
     // Optional<EstimatedRobotPose> limePose = getVision().getEstimatedPoseLime();
     // switch (SwitchOdometria) {

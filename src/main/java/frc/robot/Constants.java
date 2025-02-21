@@ -27,7 +27,7 @@ public final class Constants {
   }
 
   public final class SwerveConstants{
-    public static double VelMax = 3;
+    public static double VelMax = 1;
     public static double ZonaMorta = 0.15;
 
     public static SwerveDriveKinematics SwerveKinematics = new SwerveDriveKinematics(

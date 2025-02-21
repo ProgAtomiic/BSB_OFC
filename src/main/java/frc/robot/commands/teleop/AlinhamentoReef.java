@@ -1,246 +1,248 @@
 
-package frc.robot.commands.teleop;
+// package frc.robot.commands.teleop;
 
 // import java.util.ArrayList;
 
-import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.math.kinematics.ChassisSpeeds;
-import edu.wpi.first.wpilibj.GenericHID.RumbleType;
-import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj.XboxController;
-import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.Constants.AlinhamentoConstants;
-import frc.robot.LevelSet;
-import frc.robot.subsystems.ArmSubsystem;
-import frc.robot.subsystems.ElevatorSubsystem;
-import frc.robot.subsystems.PIDSubsystem;
-import frc.robot.subsystems.SwerveSubsystem;
-import frc.robot.subsystems.VisionSubsystem;
+// // import java.util.ArrayList;
 
-public class AlinhamentoReef extends Command {
-    // region VARIÁVEIS
-    private final ArmSubsystem Arm;
-    private final ElevatorSubsystem Elevator;
-    private final XboxController Controle_0;
-    private final XboxController Controle_2;
-    private final int Level;
-    private final SwerveSubsystem SwerveSubsystem;
-    private final String Lado;
-    private final frc.robot.LevelSet LevelSet;
-    private final VisionSubsystem Vision = new VisionSubsystem();
-    int Teste;
+// import edu.wpi.first.math.controller.PIDController;
+// import edu.wpi.first.math.kinematics.ChassisSpeeds;
+// import edu.wpi.first.wpilibj.GenericHID.RumbleType;
+// import edu.wpi.first.wpilibj.Timer;
+// import edu.wpi.first.wpilibj.XboxController;
+// import edu.wpi.first.wpilibj2.command.Command;
+// import frc.robot.Constants.AlinhamentoConstants;
+// import frc.robot.LevelSet;
+// import frc.robot.subsystems.ArmSubsystem;
+// import frc.robot.subsystems.ElevatorSubsystem;
+// import frc.robot.subsystems.PIDSubsystem;
+// import frc.robot.subsystems.SwerveSubsystem;
+// import frc.robot.subsystems.VisionSubsystem;
 
-    public double AlvoX;
-    public double Servo;
-    public boolean Alinhado;
-    private final Timer Timer = new Timer();
-    Timer TempoServo = new Timer();
-    double DistanciaAlinhar;
-    double AjusteRotacao;
-    double AjusteDistancia;
-    double AjusteDistancia2;
+// public class AlinhamentoReef extends Command {
+//     // region VARIÁVEIS
+//     private final ArmSubsystem Arm;
+//     private final ElevatorSubsystem Elevator;
+//     private final XboxController Controle_0;
+//     private final XboxController Controle_2;
+//     private final int Level;
+//     private final SwerveSubsystem SwerveSubsystem;
+//     private final String Lado;
+//     private final frc.robot.LevelSet LevelSet;
+//     private final VisionSubsystem Vision = new VisionSubsystem();
+//     int Teste;
 
-    static ArrayList<Integer> Parametros = new ArrayList<>();
+//     public double AlvoX;
+//     public double Servo;
+//     public boolean Alinhado;
+//     private final Timer Timer = new Timer();
+//     Timer TempoServo = new Timer();
+//     double DistanciaAlinhar;
+//     double AjusteRotacao;
+//     double AjusteDistancia;
+//     double AjusteDistancia2;
 
-    PIDController PIDX = new PIDController(0, 0, 0);
-    PIDController PIDY = new PIDController(0, 0, 0);
+//     static ArrayList<Integer> Parametros = new ArrayList<>();
 
-    // endregion
+//     PIDController PIDX = new PIDController(0, 0, 0);
+//     PIDController PIDY = new PIDController(0, 0, 0);
 
-    public AlinhamentoReef(ArmSubsystem Arm, ElevatorSubsystem Elevator, XboxController Controle_0,
-            XboxController Controle_2,
-            SwerveSubsystem SwerveSubsystem, String Lado, int Level, LevelSet LevelSet) {
-        this.Elevator = Elevator;
-        this.Arm = Arm;
-        this.Controle_0 = Controle_0;
-        this.Controle_2 = Controle_2;
-        this.Level = Level;
-        this.SwerveSubsystem = SwerveSubsystem;
-        this.Lado = Lado;
-        this.LevelSet = LevelSet;
-        addRequirements(Elevator, Arm, SwerveSubsystem);
-    }
+//     // endregion
 
-    // Called when the command is initially scheduled.
-    @Override
-    public void initialize() {
-        Timer.start();
-        switch (Level) {
-            case 1:
-                Parametros.add(2); // GRAUS DO ELEVADOR EXTERNO// .get(0)
+//     public AlinhamentoReef(ArmSubsystem Arm, ElevatorSubsystem Elevator, XboxController Controle_0,
+//             XboxController Controle_2,
+//             SwerveSubsystem SwerveSubsystem, String Lado, int Level, LevelSet LevelSet) {
+//         this.Elevator = Elevator;
+//         this.Arm = Arm;
+//         this.Controle_0 = Controle_0;
+//         this.Controle_2 = Controle_2;
+//         this.Level = Level;
+//         this.SwerveSubsystem = SwerveSubsystem;
+//         this.Lado = Lado;
+//         this.LevelSet = LevelSet;
+//         addRequirements(Elevator, Arm, SwerveSubsystem);
+//     }
 
-                Parametros.add(3); // ANGULO INICIAL DA GARRA (para subir o elevador) //.get(1)
-                Parametros.add(3); // ANGULO FINAL DA GARRA (para pontuar)//.get(2)
+//     // Called when the command is initially scheduled.
+//     @Override
+//     public void initialize() {
+//         Timer.start();
+//         switch (Level) {
+//             case 1:
+//                 Parametros.add(2); // GRAUS DO ELEVADOR EXTERNO// .get(0)
 
-                Parametros.add(4); // VELOCIDADE DA GARRA//.get(3)
+//                 Parametros.add(3); // ANGULO INICIAL DA GARRA (para subir o elevador) //.get(1)
+//                 Parametros.add(3); // ANGULO FINAL DA GARRA (para pontuar)//.get(2)
 
-                Parametros.add(4); // VELOCIDADE DA GARRA (SERVO) //.get(4)
+//                 Parametros.add(4); // VELOCIDADE DA GARRA//.get(3)
 
-                break;
-            case 2:
-                Parametros.add(2); // GRAUS DO ELEVADOR EXTERNO// .get(0)
+//                 Parametros.add(4); // VELOCIDADE DA GARRA (SERVO) //.get(4)
 
-                Parametros.add(3); // ANGULO INICIAL DA GARRA (para subir o elevador) //.get(1)
-                Parametros.add(3); // ANGULO FINAL DA GARRA (para pontuar)//.get(2)
+//                 break;
+//             case 2:
+//                 Parametros.add(2); // GRAUS DO ELEVADOR EXTERNO// .get(0)
 
-                Parametros.add(4); // VELOCIDADE DA GARRA//.get(3)
+//                 Parametros.add(3); // ANGULO INICIAL DA GARRA (para subir o elevador) //.get(1)
+//                 Parametros.add(3); // ANGULO FINAL DA GARRA (para pontuar)//.get(2)
 
-                break;
-            case 3:
-                Parametros.add(2); // GRAUS DO ELEVADOR EXTERNO// .get(0)
+//                 Parametros.add(4); // VELOCIDADE DA GARRA//.get(3)
 
-                Parametros.add(3); // ANGULO INICIAL DA GARRA (para subir o elevador) //.get(1)
-                Parametros.add(3); // ANGULO FINAL DA GARRA (para pontuar)//.get(2)
+//                 break;
+//             case 3:
+//                 Parametros.add(2); // GRAUS DO ELEVADOR EXTERNO// .get(0)
 
-                Parametros.add(4); // VELOCIDADE DA GARRA//.get(3)
+//                 Parametros.add(3); // ANGULO INICIAL DA GARRA (para subir o elevador) //.get(1)
+//                 Parametros.add(3); // ANGULO FINAL DA GARRA (para pontuar)//.get(2)
 
-                break;
-            case 4:
-                Parametros.add(2); // GRAUS DO ELEVADOR EXTERNO// .get(0)
+//                 Parametros.add(4); // VELOCIDADE DA GARRA//.get(3)
 
-                Parametros.add(3); // ANGULO INICIAL DA GARRA (para subir o elevador) //.get(1)
-                Parametros.add(3); // ANGULO FINAL DA GARRA (para pontuar)//.get(2)
+//                 break;
+//             case 4:
+//                 Parametros.add(2); // GRAUS DO ELEVADOR EXTERNO// .get(0)
 
-                Parametros.add(4); // VELOCIDADE DA GARRA//.get(3)
+//                 Parametros.add(3); // ANGULO INICIAL DA GARRA (para subir o elevador) //.get(1)
+//                 Parametros.add(3); // ANGULO FINAL DA GARRA (para pontuar)//.get(2)
 
-                break;
-        }
-        if (Lado == "Esquerda") {
-            AlvoX = AlinhamentoConstants.Esquerda;
-            LevelSet.RumbleControle(Controle_2, RumbleType.kLeftRumble, Timer.get());
-        } else if (Lado == "Direita") {
-            AlvoX = AlinhamentoConstants.Direita;
-            Controle_2.setRumble(RumbleType.kRightRumble, 1);
-        }
-    }
+//                 Parametros.add(4); // VELOCIDADE DA GARRA//.get(3)
 
-    // Called every time the scheduler runs while the command is scheduled.
-    @Override
-    public void execute() {
+//                 break;
+//         }
+//         if (Lado == "Esquerda") {
+//             AlvoX = AlinhamentoConstants.Esquerda;
+//             LevelSet.RumbleControle(Controle_2, RumbleType.kLeftRumble, Timer.get());
+//         } else if (Lado == "Direita") {
+//             AlvoX = AlinhamentoConstants.Direita;
+//             Controle_2.setRumble(RumbleType.kRightRumble, 1);
+//         }
+//     }
 
-        double DistanciaAtualLime = Vision.DistanciaDaTagLime();
-        double pitchAtual = VisionSubsystem.Limelight.getLatestResult().getBestTarget().pitch;
+//     // Called every time the scheduler runs while the command is scheduled.
+//     @Override
+//     public void execute() {
 
-        boolean AlinhadoDistancia = (SwerveSubsystem.DistanciaEncoder() == DistanciaAlinhar);
-        boolean alinhadoRotacao = (pitchAtual == AlvoX);
-        // ElevatorSubsystem.PIDMaisFF(Parametros.get(0)); //Talvez tenha que fazer um
-        // if
+//         double DistanciaAtualLime = Vision.DistanciaDaTagLime();
+//         double pitchAtual = VisionSubsystem.Limelight.getLatestResult().getBestTarget().pitch;
 
-        // region ALINHAMENTO
-        if (Level > 1) {
-            switch (Teste) {
-                case 1: // Alinha o chassi e levanta a garra para cima
-                    if (alinhadoRotacao) { // Coloca o alvo do alinhamento de distancia, zera o ajuste do eixo X
-                        DistanciaAlinhar = (9 - DistanciaAtualLime) + SwerveSubsystem.DistanciaEncoder();
-                        AjusteRotacao = 0;
-                        Teste = 2;
+//         boolean AlinhadoDistancia = (SwerveSubsystem.DistanciaEncoder() == DistanciaAlinhar);
+//         boolean alinhadoRotacao = (pitchAtual == AlvoX);
+//         // ElevatorSubsystem.PIDMaisFF(Parametros.get(0)); //Talvez tenha que fazer um
+//         // if
 
-                    } else { // Se não estiver alinhado na rotação, ajusta a e levanta a garra
+//         // region ALINHAMENTO
+//         if (Level > 1) {
+//             switch (Teste) {
+//                 case 1: // Alinha o chassi e levanta a garra para cima
+//                     if (alinhadoRotacao) { // Coloca o alvo do alinhamento de distancia, zera o ajuste do eixo X
+//                         DistanciaAlinhar = (9 - DistanciaAtualLime) + SwerveSubsystem.DistanciaEncoder();
+//                         AjusteRotacao = 0;
+//                         Teste = 2;
 
-                        AjusteRotacao = PIDX.calculate(pitchAtual, AlvoX);
+//                     } else { // Se não estiver alinhado na rotação, ajusta a e levanta a garra
 
-                        // Levanta a garra para seu angulo inicial
-                        // Arm.angleset(Parametros.get(1)); // Para cima
+//                         AjusteRotacao = PIDX.calculate(pitchAtual, AlvoX);
 
-                        // Faz o ajuste do robô
-                        SwerveSubsystem.getSwerveDrive().driveFieldOriented( // TODO: pode ser que tenha que ser robot
-                                new ChassisSpeeds(AjusteRotacao, 0, 0));
+//                         // Levanta a garra para seu angulo inicial
+//                         // Arm.angleset(Parametros.get(1)); // Para cima
 
-                    }
-                    break;
-                case 2: // Anha o chassi a distancia, mantendo o comando do braço
-                    if (AlinhadoDistancia) {// Zera o ajuste de distancia
-                        AjusteDistancia = 0; // TODO: talvez precise colocar o method de rodar swerve
-                        Teste = 3;
-                    } else {// Se não estiver alinhado na distância, ajusta frente/trás, mantém o comando do
-                            // braço
+//                         // Faz o ajuste do robô
+//                         SwerveSubsystem.getSwerveDrive().driveFieldOriented( // TODO: pode ser que tenha que ser robot
+//                                 new ChassisSpeeds(AjusteRotacao, 0, 0));
 
-                        AjusteDistancia = PIDY.calculate(SwerveSubsystem.DistanciaEncoder(), DistanciaAlinhar);
+//                     }
+//                     break;
+//                 case 2: // Anha o chassi a distancia, mantendo o comando do braço
+//                     if (AlinhadoDistancia) {// Zera o ajuste de distancia
+//                         AjusteDistancia = 0; // TODO: talvez precise colocar o method de rodar swerve
+//                         Teste = 3;
+//                     } else {// Se não estiver alinhado na distância, ajusta frente/trás, mantém o comando do
+//                             // braço
 
-                        SwerveSubsystem.getSwerveDrive().driveFieldOriented(new ChassisSpeeds(0, AjusteDistancia, 0));
-                    }
+//                         AjusteDistancia = PIDY.calculate(SwerveSubsystem.DistanciaEncoder(), DistanciaAlinhar);
 
-                    break;
+//                         SwerveSubsystem.getSwerveDrive().driveFieldOriented(new ChassisSpeeds(0, AjusteDistancia, 0));
+//                     }
 
-                case 3: // Coloca a garra na posicao de pontuar
-                    Teste = 4;
-                    // if (Arm.angleget() == Parametros.get(2)) { //Levantou o braço
-                    // Teste = 4;
-                    // } else { //Levanta o braço
-                    // Arm.angleset(Parametros.get(2));
-                    // }
-                    break;
+//                     break;
 
-                case 4:
-                    if (Level == 4) {
-                        if (SwerveSubsystem.DistanciaEncoder() == 9) {
-                            AjusteDistancia2 = 0;
-                            Alinhado = true;
+//                 case 3: // Coloca a garra na posicao de pontuar
+//                     Teste = 4;
+//                     // if (Arm.angleget() == Parametros.get(2)) { //Levantou o braço
+//                     // Teste = 4;
+//                     // } else { //Levanta o braço
+//                     // Arm.angleset(Parametros.get(2));
+//                     // }
+//                     break;
 
-                        } else { // Vai andar para trás ligando o servo motor
-                            // Liga o servo motor
-                            // Arm.LigarServo(0.1);
-                            AjusteDistancia2 = AjusteDistancia = PIDY.calculate(SwerveSubsystem.DistanciaEncoder(), (SwerveSubsystem.DistanciaEncoder()-9));
+//                 case 4:
+//                     if (Level == 4) {
+//                         if (SwerveSubsystem.DistanciaEncoder() == 9) {
+//                             AjusteDistancia2 = 0;
+//                             Alinhado = true;
 
-                            SwerveSubsystem.getSwerveDrive().driveFieldOriented( // TODO: pode ser que tenha que ser
+//                         } else { // Vai andar para trás ligando o servo motor
+//                             // Liga o servo motor
+//                             // Arm.LigarServo(0.1);
+//                             AjusteDistancia2 = AjusteDistancia = PIDY.calculate(SwerveSubsystem.DistanciaEncoder(), (SwerveSubsystem.DistanciaEncoder()-9));
 
-                                    new ChassisSpeeds(0, AjusteDistancia2, 0)); // por uma certa distancia?
-                        }
-                    } else {
+//                             SwerveSubsystem.getSwerveDrive().driveFieldOriented( // TODO: pode ser que tenha que ser
 
-                        if (Arm.angleget() == 0) { // Descer a garra
-                            Alinhado = true;
+//                                     new ChassisSpeeds(0, AjusteDistancia2, 0)); // por uma certa distancia?
+//                         }
+//                     } else {
 
-                        } else { // Vai descer a garra ligando o servo motor
-                            Arm.angleset(0);
-                            Arm.LigarServo(0.1);
-                        }
-                    }
-                    break;
-                default:
-                    break;
-            }
+//                         if (Arm.angleget() == 0) { // Descer a garra
+//                             Alinhado = true;
 
-        } else if (Level == 1) {
-            if (Arm.angleget() == Parametros.get(0) && ElevatorSubsystem.GetPosicaoElevador() == Parametros.get(0)) {
-                TempoServo.start();
-                if (TempoServo.get() < 5) {
-                    Arm.LigarServo(0.1);
+//                         } else { // Vai descer a garra ligando o servo motor
+//                             Arm.angleset(0);
+//                             Arm.LigarServo(0.1);
+//                         }
+//                     }
+//                     break;
+//                 default:
+//                     break;
+//             }
 
-                } else {
-                    Arm.DesligarServo();
-                    Alinhado = true;
+//         } else if (Level == 1) {
+//             if (Arm.angleget() == Parametros.get(0) && ElevatorSubsystem.GetPosicaoElevador() == Parametros.get(0)) {
+//                 TempoServo.start();
+//                 if (TempoServo.get() < 5) {
+//                     Arm.LigarServo(0.1);
 
-                }
-            } else {
-                Arm.angleset(Parametros.get(0));
-                ElevatorSubsystem.PIDMaisFF(Parametros.get(0));
-            }
-        }
-        // endregion
+//                 } else {
+//                     Arm.DesligarServo();
+//                     Alinhado = true;
 
-        // Cancela o comando
-        if ((Controle_0.getRawButton(5)) && LevelSet.Contador() >= 1) {
-            Alinhado = true;
-        }
+//                 }
+//             } else {
+//                 Arm.angleset(Parametros.get(0));
+//                 ElevatorSubsystem.PIDMaisFF(Parametros.get(0));
+//             }
+//         }
+//         // endregion
 
-    }
+//         // Cancela o comando
+//         if ((Controle_0.getRawButton(5)) && LevelSet.Contador() >= 1) {
+//             Alinhado = true;
+//         }
 
-    @Override
-    public void end(boolean interrupted) {
+//     }
 
-        Timer.stop();
-        LevelSet.ResetContador();
-        ElevatorSubsystem.DescerLimite();
-        Arm.angleset(0);
-        SwerveSubsystem.getSwerveDrive().driveFieldOriented(new ChassisSpeeds(0, 0, 0));
-        LevelSet.LadoEscolhido = "";
-        LevelSet.SetLevel(0);
-    }
+//     @Override
+//     public void end(boolean interrupted) {
 
-    @Override
-    public boolean isFinished() {
-        return Alinhado;
+//         Timer.stop();
+//         LevelSet.ResetContador();
+//         ElevatorSubsystem.DescerLimite();
+//         Arm.angleset(0);
+//         SwerveSubsystem.getSwerveDrive().driveFieldOriented(new ChassisSpeeds(0, 0, 0));
+//         LevelSet.LadoEscolhido = "";
+//         LevelSet.SetLevel(0);
+//     }
 
-    }
-}
+//     @Override
+//     public boolean isFinished() {
+//         return Alinhado;
+
+//     }
+// }

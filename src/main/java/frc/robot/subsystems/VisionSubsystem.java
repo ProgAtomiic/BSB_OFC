@@ -24,7 +24,6 @@ public class VisionSubsystem extends SubsystemBase{
     static AprilTagFieldLayout aprilTagFieldLayout = AprilTagFieldLayout.loadField(AprilTagFields.k2025ReefscapeAndyMark);
     
     public static PhotonCamera Limelight = new PhotonCamera("Limelight");
-    public static PhotonCamera Limelight = new PhotonCamera("Limelight");
     private PhotonPoseEstimator LimelightPoseEstimator = new PhotonPoseEstimator(aprilTagFieldLayout, PoseStrategy.LOWEST_AMBIGUITY, VisaoConstants.LimelightToCam); //TESTAR MULTI_TAG PNP
     
     public static PhotonCamera Arducam = new PhotonCamera("Arducam");
