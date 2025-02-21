@@ -24,9 +24,10 @@ public class VisionSubsystem extends SubsystemBase{
     static AprilTagFieldLayout aprilTagFieldLayout = AprilTagFieldLayout.loadField(AprilTagFields.k2025ReefscapeAndyMark);
     
     public static PhotonCamera Limelight = new PhotonCamera("Limelight");
+    public static PhotonCamera Limelight = new PhotonCamera("Limelight");
     private PhotonPoseEstimator LimelightPoseEstimator = new PhotonPoseEstimator(aprilTagFieldLayout, PoseStrategy.LOWEST_AMBIGUITY, VisaoConstants.LimelightToCam); //TESTAR MULTI_TAG PNP
     
-    static PhotonCamera Arducam = new PhotonCamera("Arducam");
+    public static PhotonCamera Arducam = new PhotonCamera("Arducam");
     private PhotonPoseEstimator ArducamPoseEstimator = new PhotonPoseEstimator(aprilTagFieldLayout, PoseStrategy.LOWEST_AMBIGUITY, VisaoConstants.ArducamToCam); //TESTAR MULTI_TAG PNP
     
     double DistanciaDaTagLime;
@@ -53,12 +54,10 @@ public class VisionSubsystem extends SubsystemBase{
     }
 
     public Optional<EstimatedRobotPose> getEstimatedPoseLime() {
-      //LimelightPoseEstimator.setReferencePose(prevEstimatedRobotPose);
     return LimelightPoseEstimator.update(Limelight.getLatestResult());
     }
 
     public Optional<EstimatedRobotPose> getEstimatedPoseArducam( ) {
-      //ArducamPoseEstimator.setReferencePose(prevEstimatedRobotPose);
     return ArducamPoseEstimator.update(Arducam.getLatestResult());
     }
 
