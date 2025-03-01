@@ -31,8 +31,8 @@ public class LevelSet {
     if (((int) (Timer / 5)) % 2 == 0 && !Vibrando) {
       Controle.setRumble(rumbleType, 1);
       Vibrando = true; 
-      
-  } else if (((int) (Timer / 5)) % 2 == 1 && Vibrando) {
+    }
+    else if (((int) (Timer / 5)) % 2 == 1 && Vibrando) {
     Controle.setRumble(rumbleType, 0);
       Vibrando = false; 
   }

@@ -9,7 +9,6 @@ import static edu.wpi.first.units.Units.Meter;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Optional;
 import java.util.function.Supplier;
 
 import org.json.simple.parser.ParseException;

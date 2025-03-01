@@ -3,10 +3,7 @@ package frc.robot.subsystems;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.spark.SparkMax;
 
-//import edu.wpi.first.math.controller.ArmFeedforward;
-//import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.DigitalInput;
-//import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class AlgaSubsystem extends SubsystemBase {
@@ -39,7 +36,7 @@ public class AlgaSubsystem extends SubsystemBase {
         linha.set(0);
     }
 
-    public static boolean TemAlga(){
+    public static boolean TemAlga() {
         return TemAlga.get();
     }
 
