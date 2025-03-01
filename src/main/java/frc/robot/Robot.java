@@ -84,34 +84,7 @@ public class Robot extends TimedRobot {
 
   /** This function is called periodically during operator control. */
   @Override
-  public void teleopPeriodic() {
-    /* 
-    if(Controle.getAButton() == true){
-      Intake.set(0.8);
-    }else if (Controle.getBButton() == true){
-      Intake.set(-0.8);
-    } else{
-      Intake.set(0);
-    }
-    if(Controle.getYButton() == true){
-      Linha.set(0.7);
-    }else if (Controle.getXButton() == true){
-      Linha.set(-0.7);
-    } else{
-      Linha.set(0);
-    }
-*/
-
-    // if (Controle_0.getAButton() == true){
-    //   ArmSubsystem.LigarServo(0.1);
-    // }
-    // else if (Controle_0.getBButton() == true){
-    //   ArmSubsystem.LigarServo(-0.1);
-    // }
-    // else{
-    //   ArmSubsystem.DesligarServo();
-    // }
-}
+  public void teleopPeriodic() {}
 
   @Override
   public void testInit() {

@@ -14,8 +14,7 @@ public class LevelSet {
   public double Contador = 0;
   public boolean Vibrando;
 
-  public LevelSet() {
-  }
+  public LevelSet() {}
 
   public double Contador() {
     if(LadoEscolhido.isEmpty() == false){
@@ -23,7 +22,6 @@ public class LevelSet {
     } else{
       return Contador = 0;
     }
-
   }
 
   public void RumbleControle(XboxController Controle, RumbleType rumbleType, double Timer){
@@ -35,13 +33,12 @@ public class LevelSet {
     else if (((int) (Timer / 5)) % 2 == 1 && Vibrando) {
     Controle.setRumble(rumbleType, 0);
       Vibrando = false; 
-  }
+    }
 
   }
 
   public void ResetContador() {
     Contador = 0;
-
   }
 
   public void SetLado(String lado) {
@@ -56,7 +53,6 @@ public class LevelSet {
 
   public void SetLevel(int newLevel) {
     if (LadoEscolhido.isEmpty()) {
-
       System.out.println("Escolha um lado primeiro!");
       return; // Não permite escolher nível sem lado
     } else {
