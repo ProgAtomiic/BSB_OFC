@@ -1,182 +1,200 @@
-// Copyright (c) FIRST and other WPILib contributors.
-// Open Source Software; you can modify and/or share it under the terms of
-// the WPILib BSD license file in the root directory of this project.
-
 package frc.robot;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import com.pathplanner.lib.auto.NamedCommands;
+import com.pathplanner.lib.commands.PathPlannerAuto;
 
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.ScheduleCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.Constants.SwerveConstants;
-// import frc.robot.commands.teleop.AlinhamentoReef;
-// import frc.robot.commands.teleop.IntakeCoral;
-// import frc.robot.commands.teleop.arm_command;
-//import frc.robot.commands.teleop.AlinhamentoReef;
-import frc.robot.commands.teleop.BallIntake;
-import frc.robot.commands.teleop.BallShooter;
-// import frc.robot.commands.teleop.BallTakeOut;
-//import frc.robot.commands.teleop.CoralScore;
+import frc.robot.commands.teleop.Alga.AlinhamentoAlga;
+import frc.robot.commands.teleop.Alga.BallIntake;
+import frc.robot.commands.teleop.Alga.BallSetPoint;
+import frc.robot.commands.teleop.Alga.BallShooter;
+//CORAL
+import frc.robot.commands.teleop.Reef.AlinhamentoReef;
+import frc.robot.commands.teleop.Reef.AutoDireita;
+import frc.robot.commands.teleop.Reef.IntakeCoral;
+import frc.robot.commands.teleop.Reef.TiraBolaBaixa;
+import frc.robot.commands.teleop.Reef.TiraBolaAlta;
+import frc.robot.commands.teleop.Reef.L1;
+
+//ALGA
 import frc.robot.subsystems.AlgaSubsystem;
-// import frc.robot.subsystems.ArmSubsystem;
-// import frc.robot.subsystems.ElevatorSubsystem;
+import frc.robot.subsystems.ArmSubsystem;
+// import frc.robot.commands.teleop.BallTakeOut;
+import frc.robot.subsystems.ElevatorSubsystem;
+//SWERVE
 import frc.robot.subsystems.SwerveSubsystem;
+//CAMERAS
+import frc.robot.subsystems.VisionSubsystem;
 import swervelib.SwerveInputStream;
 
 public class RobotContainer {
 
-  private final SwerveSubsystem drivebase = new SwerveSubsystem();
-  private static final XboxController Controle_0 = new XboxController(OperatorConstants.ControlePrincipal);
-  private static final XboxController Controle_2 = new XboxController(OperatorConstants.ControleSecundario);
+        // region Subsistemas+comandos
+        private final static SwerveSubsystem drivebase = new SwerveSubsystem();
+        private static final XboxController Controle_0 = new XboxController(OperatorConstants.ControlePrincipal);
+        private static final XboxController Controle_2 = new XboxController(OperatorConstants.ControleSecundario);
+
+        Trigger RightStick = new JoystickButton(Controle_0, XboxController.Button.kRightStick.value);
+
+        public static final AlgaSubsystem m_alga_subsystem = new AlgaSubsystem();
+        public static final BallIntake m_ball_intake = new BallIntake(m_alga_subsystem, Controle_0);
+        public static final BallShooter m_ball_shooter = new BallShooter(m_alga_subsystem);
+        public static final BallSetPoint m_ball_setpoint = new BallSetPoint(m_alga_subsystem);
+
+        public static final ArmSubsystem ARM_SUBSYSTEM = new ArmSubsystem();
+
+        public static final ElevatorSubsystem m_ElevatorSubsystem = new ElevatorSubsystem();
+        public static final LevelSet m_LevelSet = new LevelSet(m_ElevatorSubsystem, drivebase, ARM_SUBSYSTEM,
+                        Controle_2);
+
+        public static final VisionSubsystem Visao = new VisionSubsystem();
+        public static final IntakeCoral IntakeCoral = new IntakeCoral(m_ElevatorSubsystem, ARM_SUBSYSTEM);
+        public static final AlinhamentoAlga m_alinhamento_alga = new AlinhamentoAlga(Controle_0, Controle_2, drivebase,
+                        m_alga_subsystem);
+        public static final AlinhamentoReef AlinhamentoReef = new AlinhamentoReef(ARM_SUBSYSTEM, m_ElevatorSubsystem,
+                        Controle_0, Controle_2, drivebase, m_LevelSet);
+        public static final TiraBolaBaixa TiraBolaBaixa = new TiraBolaBaixa(m_alga_subsystem, m_ElevatorSubsystem,
+                        ARM_SUBSYSTEM);
+        public static final TiraBolaAlta TiraBolaAlta = new TiraBolaAlta(m_alga_subsystem, m_ElevatorSubsystem,
+                        ARM_SUBSYSTEM);
+        public static final L1 L1 = new L1(m_ElevatorSubsystem, ARM_SUBSYSTEM, drivebase, m_LevelSet, Controle_0);
+
+        private final Map<JoystickButton, Integer> MapBotaoLevel = new HashMap<>();
+
+        public static final AlinhamentoAlga AlinhamentoAlga = new AlinhamentoAlga(Controle_0, Controle_2, drivebase,
+                        m_alga_subsystem);
+
+        // endregion
+        public RobotContainer() {
+
+                NamedCommands.registerCommand("AlinhamentoDireita", new AutoDireita(ARM_SUBSYSTEM, m_ElevatorSubsystem,Controle_0, Controle_2, drivebase, m_LevelSet));
+                NamedCommands.registerCommand("L1", new L1(m_ElevatorSubsystem, ARM_SUBSYSTEM, drivebase, m_LevelSet, Controle_0));
+
+                configureBindings();
+        }
+
+        // region Swerve
+        SwerveInputStream DriveVelAngular = SwerveInputStream.of(
+                drivebase.getSwerveDrive(),
+                () -> Controle_0.getLeftY() * -1,
+                () -> Controle_0.getLeftX() * -1)
+                .withControllerRotationAxis(Controle_0::getRightX)
+                .deadband(SwerveConstants.ZonaMorta)
+                .scaleTranslation(0.8)
+                .allianceRelativeControl(true);
+
+        //Baixa velocidade      
+        SwerveInputStream DriveVelAngularLow = SwerveInputStream.of(
+                drivebase.getSwerveDrive(),
+                () -> Controle_0.getLeftY() * -1,
+                () -> Controle_0.getLeftX() * -1)
+                .withControllerRotationAxis(Controle_0::getRightX)
+                .deadband(SwerveConstants.ZonaMorta)
+                .scaleTranslation(0.05)
+                .allianceRelativeControl(true);
+
+        SwerveInputStream driveDirectAngle = DriveVelAngular.copy().withControllerHeadingAxis(
+                Controle_0::getRightX,
+                Controle_0::getRightY)
+                .headingWhile(true);
+
+        // SwerveInputStream DriveLow = DriveVelAngularLow.copy().withControllerHeadingAxis(
+        // Controle_0::getRightX,
+        // Controle_0::getRightY)
+        // .headingWhile(true);
+
+        SwerveInputStream DriveLow = DriveVelAngularLow.copy().withControllerRotationAxis(
+                Controle_0::getRightX)//TODO: TALVEZ MUDAR PRA LEFTX
+                .headingWhile(true);
 
 
+                
+        // Command driveFieldOrientedDirectAngle =
+        // drivebase.driveFieldOriented(driveDirectAngle);
+        Command driveFieldOrientedAngularVelocity = drivebase.driveFieldOriented(DriveVelAngular);
 
-  /*
-   * /////////////////////////////////////////////////////////////////////////////
-   * ///////////////////////
-   * public static final BallTakeOut m_ball_take_out_baixo = new
-   * BallTakeOut(m_amr, m_elevator, Controle_0, 1);
-   * public static final BallTakeOut m_ball_take_out_cima = new BallTakeOut(m_amr,
-   * m_elevator, Controle_0, 2);
-   */
-  public static final AlgaSubsystem m_intake_alga = new AlgaSubsystem();
-  public static final BallIntake m_ball_intake = new BallIntake(m_intake_alga,
-  Controle_0);
-  public static final BallShooter m_ball_shooter = new
-  BallShooter(m_intake_alga, Controle_0);
-  ////////////////////////////////////////////////////////////////////////////////////////////////////
-  // public static final ArmSubsystem m_ArmSubsystem = new ArmSubsystem();
+        Command driveRobotSlow = drivebase.driveFieldOriented(DriveLow);
+        // Command driveRobotOriented = drivebase.driveRobotOriented(DriveVelAngular);
 
-  // public static final arm_command m_arm_0 = new arm_command(m_ArmSubsystem, Controle_0, 0);
-  // public static final arm_command m_arm_45 = new arm_command(m_ArmSubsystem, Controle_0, 45);
-  // public static final arm_command m_arm_90 = new arm_command(m_ArmSubsystem, Controle_0, 90);
-  // public static final arm_command m_arm_135 = new arm_command(m_ArmSubsystem, Controle_0, 135);
-  // public static final arm_command m_arm_set = new arm_command(m_ArmSubsystem, Controle_0, -1);
+        private void configureBindings() {
+                // SWERVE
+                drivebase.setDefaultCommand(driveFieldOrientedAngularVelocity);
+                // drivebase.setDefaultCommand(driveRobotOriented);
 
-  public static final LevelSet m_LevelSet = new LevelSet();
-  // public static final ElevatorSubsystem m_ElevatorSubsystem = new ElevatorSubsystem();
-
-  public RobotContainer() {
-    // NamedCommands.registerCommand("IntakeCoral", new IntakeCoral(m_ElevatorSubsystem));
-    // NamedCommands.registerCommand("AlinhamentoDireita", new AlinhamentoReef(m_ArmSubsystem, m_ElevatorSubsystem, Controle_0, Controle_2, drivebase, "Direita", 0, m_LevelSet)); //ESCOLHER O LADO
-    // NamedCommands.registerCommand("AlinhamentoEsquerda", new AlinhamentoReef(m_ArmSubsystem, m_ElevatorSubsystem, Controle_0, Controle_2, drivebase, "Esquerda", 0, m_LevelSet)); //ESCOLHER O LADO
+                new JoystickButton(Controle_0, XboxController.Button.kX.value).toggleOnTrue(driveRobotSlow);
+                new JoystickButton(Controle_2, XboxController.Button.kY.value).onTrue(L1);
 
 
-    configureBindings();
-  }
+                // ALGA SUBSYSTEM
+                new Trigger(() -> Controle_0.getLeftTriggerAxis() > 0.25).whileTrue(m_ball_intake);
+                new Trigger(() -> Controle_0.getRightTriggerAxis() > 0.25).whileTrue(m_ball_shooter);
+                new Trigger(() -> Controle_0.getLeftTriggerAxis() < 0.25 && Controle_0.getRightTriggerAxis() < 0.25).whileTrue(m_ball_setpoint);
 
-  SwerveInputStream DriveVelAngular = SwerveInputStream.of(
-      drivebase.getSwerveDrive(),
-      () -> Controle_0.getLeftY() * -1,
-      () -> Controle_0.getLeftX() * -1)
-      .withControllerRotationAxis(Controle_0::getRightX)
-      .deadband(SwerveConstants.ZonaMorta)
-      .scaleTranslation(0.8)
-      .allianceRelativeControl(true);
+                // new Trigger(() ->
+                // Controle_0.getLeftStickButton()).onTrue(m_alinhamento_alga);
 
-  SwerveInputStream driveDirectAngle = DriveVelAngular.copy().withControllerHeadingAxis(
-      Controle_0::getRightX,
-      Controle_0::getRightY)
-      .headingWhile(true);
+                // ELEVADOR SUBSYSTEM
+                new Trigger(() -> Controle_0.getRightStickButton()).toggleOnTrue(IntakeCoral);
+                new Trigger(() -> Controle_0.getYButton()).toggleOnTrue(TiraBolaAlta);
+                new Trigger(() -> Controle_0.getAButton()).toggleOnTrue(TiraBolaBaixa);
 
-  Command driveFieldOrientedDirectAngle = drivebase.driveFieldOriented(driveDirectAngle);
-  Command driveFieldOrientedAngularVelocity = drivebase.driveFieldOriented(DriveVelAngular);
-  Command driveRobotOriented = drivebase.driveRobotOriented(DriveVelAngular);
+                // new Trigger(() -> Controle_0.getXButton()).toggleOnTrue(AlinhamentoAlga);
 
-  private void configureBindings() {
-    drivebase.setDefaultCommand(driveFieldOrientedAngularVelocity);
-    new Trigger(() -> Controle_0.getLeftTriggerAxis() > 0.25).onTrue(m_ball_intake);
-    new Trigger(() -> Controle_0.getRightTriggerAxis() > 0.25).onTrue(m_ball_shooter);
+                // Esocolha lado
+                new JoystickButton(Controle_0, XboxController.Button.kLeftBumper.value)
+                                .onTrue(new InstantCommand(() -> m_LevelSet.selectSide("Esquerda")));
 
-    // Controle_0.getAButton().whenTrue(drivebase.getPathCommand("Teste")); ARRUMAR
+                new JoystickButton(Controle_0, XboxController.Button.kRightBumper.value)
+                                .onTrue(new InstantCommand(() -> m_LevelSet.selectSide("Direita")));
 
-    // new Trigger(Axis3::get).onTrue(m_ShootDefault);
-    // new Trigger(Axis2::get).onTrue(m_IntakeDefault);
-    // Botao5.whileTrue(m_AjusteAngulo_Distancia);
+                // MapBotaoLevel.put(new JoystickButton(Controle_0,
+                // XboxController.Button.kX.value), 2);
+                // MapBotaoLevel.put(new JoystickButton(Controle_2, XboxController.Button.kY.value), 1);
+                MapBotaoLevel.put(new JoystickButton(Controle_2, XboxController.Button.kB.value), 3);
+                MapBotaoLevel.put(new JoystickButton(Controle_2, XboxController.Button.kA.value), 4);
 
-    /// TA RUIM, MUDAR.
-    /// MELHOR COLOCAR ESSA CONDIÇÃO DE VER ALGUMA TAR DO REEF DENTRO DE UM CICLO
-    /// QUE RODA IDEPENDENTE
-    /// DOS BOTÕES PRA FAZER O CONTORLE VIBRAR.
-    /// A SEGUINTE CONDIÇÃO DEVE SER FEITA DEITOR DO PRÓPRIO COMANDO, APENAS O
-    /// VIBRAR DO CONTROLE DEVE
-    /// SER FEITO FORA.
-    /// TEM QUE ADICIONAR A FUNÇÃO DO DETECTOR DE PRESENÇA PRO CANO TAMBÉM.
-    /*
-     * if (true) { // SE O ROBÔ ESTIVER VENDO ALGUMA TAG DE REEF
-     * new Trigger(() -> Controle_0.getRawButton(0)).onTrue(m_levelsetL1);
-     * new Trigger(() -> Controle_0.getRawButton(1)).onTrue(m_levelsetL2);
-     * new Trigger(() -> Controle_0.getRawButton(2)).onTrue(m_levelsetL3);
-     * new Trigger(() -> Controle_0.getRawButton(3)).onTrue(m_levelsetL4);
-     * }
-     * /////////////////////////////////////////////////////////////////////////////
-     * ///////////////////////
-     * // new Trigger(() ->
-     * Controle_0.getRawButton(4)).onTrue(m_alinhamentoreefESQUERDA);
-     * // new Trigger(() ->
-     * Controle_0.getRawButton(5)).onTrue(m_alinhamentoreefDIREITA);
-     * /////////////////////////////////////////////////////////////////////////////
-     * ///////////////////////
-     * new Trigger(() -> Controle_0.getRawButton(6)).onTrue(m_ball_intake);
-     * new Trigger(() -> Controle_0.getRawButton(7)).onTrue(m_ball_shooter);
-     * /////////////////////////////////////////////////////////////////////////////
-     * ///////////////////////
-     * new Trigger(() -> Controle_0.getRawButton(12)).onTrue(m_ball_take_out_cima);
-     * new Trigger(() -> Controle_0.getRawButton(13)).onTrue(m_ball_take_out_baixo);
-     * /////////////////////////////////////////////////////////////////////////////
-     * ///////////////////////
-     * 
-     */
-    /*
-     * new Trigger(() -> Controle_0.getRawButton(5)).whileTrue(m_ball_intake);
-     * new Trigger(() -> Controle_0.getRawButton(6)).whileTrue(m_ball_shooter);
-     * new Trigger(() -> Controle_0.getRawButton(1)).whileTrue(m_ball_intake);
-     * new Trigger(() -> Controle_0.getRawButton(2)).whileTrue(m_ball_shooter);
-     */
+                for (Map.Entry<JoystickButton, Integer> entry : MapBotaoLevel.entrySet()) {
+                        JoystickButton Botao = entry.getKey();
+                        int Level = entry.getValue();
 
-    // TODO: DAQUI PRA BAIXO TEM CHANCE DE FUNCIONAR:
-    // new Trigger(() -> Controle_0.getRawButton(1)).whileTrue(m_arm_0);
-    // new Trigger(() -> Controle_0.getRawButton(2)).whileTrue(m_arm_45);
-    // new Trigger(() -> Controle_0.getRawButton(3)).whileTrue(m_arm_90);
-    // new Trigger(() -> Controle_0.getRawButton(4)).whileTrue(m_arm_135);
-    // new Trigger(() -> Controle_0.getRawButton(5)).whileTrue(m_arm_set);
+                        Botao.onTrue(new InstantCommand(() -> {
+                                m_LevelSet.selectLevel(Level);
+                        }));
+                }
 
-    // new JoystickButton(Controle_0, 5).onTrue(new InstantCommand(() ->
-    // m_LevelSet.SetLado("Esquerda")));
-    // new JoystickButton(Controle_0, 6).onTrue(new InstantCommand(() ->
-    // m_LevelSet.SetLado("Direita")));
-    // // Botões para escolher o nível (só funciona se um lado foi escolhido)
-    // new JoystickButton(Controle_2, 1).onTrue(new InstantCommand(() ->
-    // m_LevelSet.SetLevel(1)));
-    // new JoystickButton(Controle_2, 2).onTrue(new InstantCommand(() ->
-    // m_LevelSet.SetLevel(2)));
-    // new JoystickButton(Controle_2, 3).onTrue(new InstantCommand(() ->
-    // m_LevelSet.SetLevel(3)));
-    // new JoystickButton(Controle_2, 4).onTrue(new InstantCommand(() ->
-    // m_LevelSet.SetLevel(4)));
+                new Trigger(() -> m_LevelSet.PodeAlinhar()).onTrue(new InstantCommand(this::ComecaAlinhamento));
+                new Trigger(() -> Controle_0.getStartButton())
+                                .onTrue(Commands.runOnce(() -> CommandScheduler.getInstance().cancelAll()));
 
-    // if (m_LevelSet.TemLevel() == true) {
-    //   new AlinhamentoReef(m_ArmSubsystem, m_ElevatorSubsystem, Controle_0, Controle_2, drivebase,
-    //     m_LevelSet.GetLado(), m_LevelSet.GetLevel(), m_LevelSet).schedule();
+                new JoystickButton(Controle_2, XboxController.Button.kStart.value)
+                                .onTrue(Commands.runOnce(() -> drivebase.resetGyro()));
+        }
 
-    // } 
+        private void ComecaAlinhamento() {
+                new AlinhamentoReef(ARM_SUBSYSTEM, m_ElevatorSubsystem, Controle_0, Controle_2, drivebase, m_LevelSet)
+                                .schedule();
+        }
 
+        public Command getAutonomousCommand() {
 
+                return new PathPlannerAuto("AutonomoOFC1");
+                // return new PathPlannerAuto("AUTOTRAS");
 
-    
-    // public Command getAutonomousCommand() {
-    // return drivebase.getAutonomousCommand("Auto1");
-    // }
+                // return new AUTONOMO(ARM_SUBSYSTEM, m_ElevatorSubsystem, Controle_0,
+                // Controle_2, drivebase, m_LevelSet);
 
-    /**
-     * Use this to pass the autonomous command to the main {@link Robot} class.
-     *
-     * @return the command to run in autonomous
-     */
+        }
 
-  }
 }

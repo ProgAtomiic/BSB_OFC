@@ -3,25 +3,25 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 5.38,
-        "y": 5.214
+        "x": 5.801,
+        "y": 3.937
       },
       "prevControl": null,
       "nextControl": {
-        "x": 5.180341122488177,
-        "y": 5.364453755788012
+        "x": 6.9197192628638495,
+        "y": 3.920752437745593
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 1.141729797979798,
-        "y": 6.911616161616162
+        "x": 6.766500000000001,
+        "y": 3.937
       },
       "prevControl": {
-        "x": 1.501086463923719,
-        "y": 6.289192158162734
+        "x": 5.719629256842225,
+        "y": 3.9871121729445878
       },
       "nextControl": null,
       "isLocked": false,
@@ -33,22 +33,22 @@
   "pointTowardsZones": [],
   "eventMarkers": [],
   "globalConstraints": {
-    "maxVelocity": 3.0,
-    "maxAcceleration": 3.0,
-    "maxAngularVelocity": 540.0,
-    "maxAngularAcceleration": 720.0,
+    "maxVelocity": 1.0,
+    "maxAcceleration": 0.5,
+    "maxAngularVelocity": 270.0,
+    "maxAngularAcceleration": 360.0,
     "nominalVoltage": 12.0,
     "unlimited": false
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -59.99999999999999
+    "rotation": 0.0
   },
   "reversed": false,
-  "folder": "Autonomo Central",
+  "folder": "Autonomo Direita",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": -120.619
+    "rotation": 0.0
   },
   "useDefaultConstraints": true
 }

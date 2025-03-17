@@ -3,25 +3,25 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 1.142,
-        "y": 6.912
+        "x": 7.53675,
+        "y": 3.9372499999999993
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.267,
-        "y": 6.6954936490538906
+        "x": 7.249119845962839,
+        "y": 3.9379301819847603
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 3.591,
-        "y": 5.275189393939394
+        "x": 5.801,
+        "y": 3.9372499999999993
       },
       "prevControl": {
-        "x": 3.3598302510154925,
-        "y": 5.370376300362703
+        "x": 6.430905064904416,
+        "y": 3.9373515081837915
       },
       "nextControl": null,
       "isLocked": false,
@@ -42,13 +42,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -59.99999999999999
+    "rotation": 0.0
   },
   "reversed": false,
-  "folder": null,
+  "folder": "Autonomo Direita",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": -59.99999999999999
+    "rotation": 0.0
   },
   "useDefaultConstraints": true
 }

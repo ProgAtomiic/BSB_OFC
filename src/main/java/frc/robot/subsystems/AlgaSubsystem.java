@@ -3,27 +3,36 @@ package frc.robot.subsystems;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.spark.SparkMax;
 
-//import edu.wpi.first.math.controller.ArmFeedforward;
-//import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.DigitalInput;
-//import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class AlgaSubsystem extends SubsystemBase {
-    static SparkMax linha = new SparkMax(17, SparkMax.MotorType.kBrushless);
-    static SparkMax intake = new SparkMax(51, SparkMax.MotorType.kBrushless);
 
-    RelativeEncoder linhaEncoder = linha.getEncoder();
-    RelativeEncoder intakeEncoder = intake.getEncoder();
+    static SparkMax linha = new SparkMax(21, SparkMax.MotorType.kBrushless);
+    static SparkMax intake = new SparkMax(22, SparkMax.MotorType.kBrushless);
+
+    static RelativeEncoder linhaEncoder = linha.getEncoder();
 
     static DigitalInput TemAlga = new DigitalInput(1);
+    static PIDController PID = new PIDController(0.05, 0, 0);
 
-    
+    public static void reset_motor() {
+        linhaEncoder.setPosition(0);
+    }
 
-    //PIDController pidi = new PIDController(0, 0, 0);
-    //private static final ArmFeedforward feedforward = new ArmFeedforward(0, 0, 0, 0);
+    public static void linha(double rotacao) {
+        double velocidade = PID.calculate(linhaEncoder.getPosition(), rotacao);
+        double vel_max = 0.8;
+        linha.set(MathUtil.clamp(velocidade, -0.8, 0.8));
+    }
 
-    public static void linhaset(double velocidade) {
+    public static double EncoderLinha() {
+        return linha.getEncoder().getPosition();
+    }
+
+    public static void linhasobe(double velocidade) {
         linha.set(velocidade);
     }
 
@@ -39,21 +48,7 @@ public class AlgaSubsystem extends SubsystemBase {
         linha.set(0);
     }
 
-    public static boolean TemAlga(){
+    public static boolean TemAlga() {
         return TemAlga.get();
     }
-
-    public boolean exampleCondition() {
-        // Query some boolean state, such as a digital sensor.
-        return false;
-    }
-
-    public void periodic() {
-        // This method will be called once per scheduler run
-    }
-
-    public void simulationPeriodic() {
-        // This method will be called once per scheduler run during simulation
-    }
-
 }

@@ -10,81 +10,119 @@ import org.photonvision.EstimatedRobotPose;
 import org.photonvision.PhotonCamera;
 import org.photonvision.PhotonPoseEstimator;
 import org.photonvision.PhotonPoseEstimator.PoseStrategy;
+import org.photonvision.PhotonUtils;
+import org.photonvision.common.hardware.VisionLEDMode;
 import org.photonvision.targeting.PhotonPipelineResult;
+import org.photonvision.targeting.PhotonTrackedTarget;
 
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants;
 import frc.robot.Constants.VisaoConstants;
 
+import edu.wpi.first.math.geometry.Pose3d;
+import edu.wpi.first.math.geometry.Rotation3d;
+
+import org.photonvision.targeting.PhotonTrackedTarget;
+import edu.wpi.first.math.geometry.Rotation3d;
+import edu.wpi.first.math.geometry.Transform3d;
+
 /** Add your docs here. */
-public class VisionSubsystem extends SubsystemBase{
-    
-    static AprilTagFieldLayout aprilTagFieldLayout = AprilTagFieldLayout.loadField(AprilTagFields.k2025ReefscapeAndyMark);
-    
-    public static PhotonCamera Limelight = new PhotonCamera("Limelight");
-    private PhotonPoseEstimator LimelightPoseEstimator = new PhotonPoseEstimator(aprilTagFieldLayout, PoseStrategy.LOWEST_AMBIGUITY, VisaoConstants.LimelightToCam); //TESTAR MULTI_TAG PNP
-    
-    public static PhotonCamera Arducam = new PhotonCamera("Arducam");
-    private PhotonPoseEstimator ArducamPoseEstimator = new PhotonPoseEstimator(aprilTagFieldLayout, PoseStrategy.LOWEST_AMBIGUITY, VisaoConstants.ArducamToCam); //TESTAR MULTI_TAG PNP
-    
-    double DistanciaDaTagLime;
-    double AnguloMontagemLime = 25.0; //TODO
-    // distance from the center of the Limelight lens to the floor
-    double AlturaLenteLime = 20.0;
-    // distance from the target to the floor 
-    double AlturaAlvoLime = 60.0; //TODO
+public class VisionSubsystem extends SubsystemBase {
 
-    double DistanciaDaTagArducam;
-    double AnguloMontagemArducam = 25.0; //TODO
-    // distance from the center of the Limelight lens to the floor
-    double AlturaLenteArducam = 20.0;
-    // distance from the target to the floor 
-    double AlturaAlvoArducam = 60.0; //TODO
+  static AprilTagFieldLayout aprilTagFieldLayout = AprilTagFieldLayout.loadField(AprilTagFields.k2025ReefscapeAndyMark);
 
-    
-    
-    
-    
-    public VisionSubsystem(){
-      // LimelightPoseEstimator.setMultiTagFallbackStrategy(PoseStrategy.LOWEST_AMBIGUITY);
-      // ArducamPoseEstimator.setMultiTagFallbackStrategy(PoseStrategy.LOWEST_AMBIGUITY);
-    }
+  public static PhotonCamera Limelight = new PhotonCamera("Limelight");
+  private PhotonPoseEstimator LimelightPoseEstimator = new PhotonPoseEstimator(aprilTagFieldLayout,
+      PoseStrategy.LOWEST_AMBIGUITY, VisaoConstants.LimelightToCam); // TESTAR MULTI_TAG PNP
 
-    public Optional<EstimatedRobotPose> getEstimatedPoseLime() {
+  public static PhotonCamera Arducam = new PhotonCamera("Arducam");
+  private PhotonPoseEstimator ArducamPoseEstimator = new PhotonPoseEstimator(aprilTagFieldLayout,
+      PoseStrategy.LOWEST_AMBIGUITY, VisaoConstants.ArducamToCam); // TESTAR MULTI_TAG PNP
+
+  public VisionSubsystem() {
+    Limelight.setLED(VisionLEDMode.kOn);
+
+  }
+
+  public Optional<EstimatedRobotPose> getEstimatedPoseLime() {
     return LimelightPoseEstimator.update(Limelight.getLatestResult());
-    }
+  }
 
-    public Optional<EstimatedRobotPose> getEstimatedPoseArducam( ) {
+  public Optional<EstimatedRobotPose> getEstimatedPoseArducam() {
     return ArducamPoseEstimator.update(Arducam.getLatestResult());
+  }
+
+  public PhotonPipelineResult LimeGetLatestResult() {
+    return Limelight.getLatestResult();
+  }
+
+  public double DistanceToTarget(Pose2d robotPose, Pose2d targetPose) {
+    return PhotonUtils.getDistanceToPose(robotPose, targetPose);
+
+  }
+
+  public void periodic() {
+
+  }
+
+  public boolean TagIntakeCoral() {
+    var latestResult = ArducamGetLatestResult();
+
+    if (!latestResult.hasTargets()) {
+        return false;
     }
 
-
-    public PhotonPipelineResult LimeGetLatestResult() {
-      return Limelight.getLatestResult();
+    var bestTarget = latestResult.getBestTarget();
+    if (bestTarget == null) { // Prevents NullPointerException
+        return false;
     }
 
-    public void periodic(){
-    }
+    int fiducialId = bestTarget.getFiducialId();
+    double distance = bestTarget.getBestCameraToTarget().getX();
 
-    public PhotonPipelineResult ArducamGetLatestResult() {
-      return Arducam.getLatestResult();
-    }
+    return (fiducialId == 13 || fiducialId == 12) && distance < 1.7;
+}
 
-    public double DistanciaDaTagLime(){
-      //calculate distance
-        return  DistanciaDaTagLime = (AlturaAlvoLime - AlturaLenteLime) / Math.tan(Units.degreesToRadians((AnguloMontagemLime + Limelight.getLatestResult().getBestTarget().pitch)));
-  
-  
+
+  public PhotonPipelineResult ArducamGetLatestResult() {
+    return Arducam.getLatestResult();
+  }
+
+  public Rotation2d IdTag() {
+
+    if (LimeGetLatestResult().hasTargets()) {
+      var bestTarget = LimeGetLatestResult().getBestTarget();
+      if (LimeGetLatestResult().getBestTarget() != null) {
+        return aprilTagFieldLayout.getTagPose(bestTarget.getFiducialId()).get().getRotation().toRotation2d();
+
+      }
+    }
+    return new Rotation2d(0); // Default rotation if no target is found
+
+  }
+
+  public Rotation3d getTagRotation(PhotonTrackedTarget target) {
+
+    if (LimeGetLatestResult().hasTargets()) {
+      var bestTarget = LimeGetLatestResult().getBestTarget();
+      if (LimeGetLatestResult().getBestTarget() != null) {
+        Transform3d transform = target.getBestCameraToTarget();
+        // Retorna a rotação (Yaw, Pitch, Roll)
+
+        return transform.getRotation();
+
       }
 
-      public double DistanciaDaTagArducam(){
-        //calculate distance
-          return  DistanciaDaTagArducam = (AlturaAlvoArducam - AlturaLenteArducam) / Math.tan(Units.degreesToRadians((AnguloMontagemArducam + Limelight.getLatestResult().getBestTarget().pitch)));
-    
-    
-        }
-  
-    
+    }
+    return new Rotation3d();
+
+  }
+
 }
