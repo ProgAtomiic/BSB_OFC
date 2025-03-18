@@ -37,7 +37,7 @@ public class ElevatorSubsystem extends SubsystemBase {
         double AjusteFF = FeedforwardD.calculate(AjustePID);
         double soma_ajuste = AjusteFF + AjustePID;
         
-        Elevador.setVoltage(MathUtil.clamp(soma_ajuste, -4.5, 7)); // ALTERACAO 4
+        Elevador.setVoltage(MathUtil.clamp(soma_ajuste, -5, 7)); // ALTERACAO 4
 
     }
 

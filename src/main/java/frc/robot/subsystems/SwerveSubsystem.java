@@ -31,6 +31,7 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.networktables.NetworkTableInstance;
@@ -157,8 +158,10 @@ public class SwerveSubsystem extends SubsystemBase {
             }
           },
           new PPHolonomicDriveController(
+              // new PIDConstants(0.005, 0.0, 0.4),
+              // new PIDConstants(0.005, 0, 0.6)
               new PIDConstants(0.005, 0.0, 0.4),
-              new PIDConstants(0.005, 0, 0.6)
+              new PIDConstants(0.011, 0, 0.003)
 
           ),
           config,
@@ -201,119 +204,28 @@ public class SwerveSubsystem extends SubsystemBase {
 
   public double DistanciaEncoder() {
     return swerveDrive.getModulePositions()[0].distanceMeters;
+
+  }
+
+  public void ZeroWheels() {
+    swerveDrive.setModuleStates(
+        new SwerveModuleState[] {
+            new SwerveModuleState(0, Rotation2d.fromDegrees(0)),
+            new SwerveModuleState(0, Rotation2d.fromDegrees(0)),
+            new SwerveModuleState(0, Rotation2d.fromDegrees(0)),
+            new SwerveModuleState(0, Rotation2d.fromDegrees(0))
+        },
+        false);
   }
 
   // endregion
   public void periodic() {
 
-    // var currentCommand = getCurrentCommand();
-    // if (currentCommand != null) {
-    // System.out.println("[ElevatorSubsystem] Running Command: " +
-    // currentCommand.getName());
-    // }
-
-    // Optional<EstimatedRobotPose> estimatedPoseOpt =
-    // Vision.getEstimatedPoseLime();
-    // if (estimatedPoseOpt.isPresent()) {
-    // if (estimatedPoseOpt.isPresent()) {
-    // //
-    // System.out.println(estimatedPoseOpt.get().estimatedPose.toPose2d().getRotation().getDegrees());
-    // // swerveDrive.swerveDrivePoseEstimator.addVisionMeasurement(
-    // // estimatedPoseOpt.get().estimatedPose.toPose2d().getRotation(),
-    // // estimatedPoseOpt.get().timestampSeconds,
-    // // visionMeasurementsStdDevs);
-    // }
-    // }
-
-    // Optional<EstimatedRobotPose> estimatedPoseOpt =
-    // Vision.getEstimatedPoseLime();
-
     swerveDrive.setChassisDiscretization(true, true, 0.02);
     swerveDrive.setHeadingCorrection(false);
 
-    // System.out.println(swerveDrive.getOdometryHeading());
-    // // Variáveis globais para estabilidade da escolha
-    // private static final double AMBIGUITY_THRESHOLD = 0.15; // Ajustável conforme
-    // necessário
-    // private String lastChosenCamera = "limelight"; // Inicialmente priorizando a
-    // Limelight
-    // private int stableChoiceCounter = 0;
-    // private static final int STABILITY_COUNT = 5; // Precisa ser melhor por 5
-    // ciclos seguidos
 
-    // Optional<EstimatedRobotPose> aruPose = getVision().getEstimatedPoseArducam();
-    // Optional<EstimatedRobotPose> limePose = getVision().getEstimatedPoseLime();
-
-    // if (aruPose.isPresent() && limePose.isPresent()) {
-    // PhotonTrackedTarget aruTarget = aruPose.get().estimatedPose.getBestTarget();
-    // PhotonTrackedTarget limeTarget =
-    // limePose.get().estimatedPose.getBestTarget();
-
-    // int aruTagID = aruTarget.getFiducialId();
-    // int limeTagID = limeTarget.getFiducialId();
-
-    // // Se as duas câmeras veem a mesma tag
-    // if (aruTagID == limeTagID) {
-    // double aruAmbiguity = aruTarget.getPoseAmbiguity();
-    // double limeAmbiguity = limeTarget.getPoseAmbiguity();
-
-    // // Filtro para evitar instabilidades:
-    // // Se uma câmera for melhor por STABILITY_COUNT ciclos consecutivos, trocamos
-    // // para ela
-    // if (aruAmbiguity < limeAmbiguity - AMBIGUITY_THRESHOLD) {
-    // if (lastChosenCamera.equals("arducam")) {
-    // stableChoiceCounter = 0; // Já estamos na melhor câmera
-    // } else {
-    // stableChoiceCounter++;
-    // if (stableChoiceCounter >= STABILITY_COUNT) {
-    // lastChosenCamera = "arducam"; // Troca de câmera somente após estabilidade
-    // stableChoiceCounter = 0;
-    // }
-    // }
-    // } else if (limeAmbiguity < aruAmbiguity - AMBIGUITY_THRESHOLD) {
-    // if (lastChosenCamera.equals("limelight")) {
-    // stableChoiceCounter = 0;
-    // } else {
-    // stableChoiceCounter++;
-    // if (stableChoiceCounter >= STABILITY_COUNT) {
-    // lastChosenCamera = "limelight";
-    // stableChoiceCounter = 0;
-    // }
-    // }
-    // }
-
-    // // Escolher a câmera final com base na escolha estável
-    // EstimatedRobotPose chosenPose = lastChosenCamera.equals("arducam") ?
-    // aruPose.get() : limePose.get();
-
-    // swerveDrive.swerveDrivePoseEstimator.addVisionMeasurement(
-    // chosenPose.estimatedPose.toPose2d(),
-    // chosenPose.timestampSeconds,
-    // visionMeasurementsStdDevs);
-
-    // } else {
-    // // Tags diferentes - escolher a câmera principal (ex: Limelight)
-    // swerveDrive.swerveDrivePoseEstimator.addVisionMeasurement(
-    // limePose.get().estimatedPose.toPose2d(),
-    // limePose.get().timestampSeconds,
-    // visionMeasurementsStdDevs);
-    // }
-
-    // } else if (aruPose.isPresent()) {
-    // // Apenas Arducam detectou uma tag
-    // swerveDrive.swerveDrivePoseEstimator.addVisionMeasurement(
-    // aruPose.get().estimatedPose.toPose2d(),
-    // aruPose.get().timestampSeconds,
-    // visionMeasurementsStdDevs);
-
-    // } else if (limePose.isPresent()) {
-    // // Apenas Limelight detectou uma tag
-    // swerveDrive.swerveDrivePoseEstimator.addVisionMeasurement(
-    // limePose.get().estimatedPose.toPose2d(),
-    // limePose.get().timestampSeconds,
-    // visionMeasurementsStdDevs);
-    // }
-
+   
     publisher.set(swerveDrive.getPose());
 
   }

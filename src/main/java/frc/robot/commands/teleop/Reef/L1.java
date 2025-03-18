@@ -86,7 +86,9 @@ public class L1 extends Command {
       switch (Parte2) {
 
         case 1:
-          if (ArmSubsystem.angleget() > 65 && ArmSubsystem.angleget() < 75) {
+          if (ArmSubsystem.angleget() > 65
+          
+           && ArmSubsystem.angleget() < 75) {
             TempoAlinhamento = Timer.getFPGATimestamp();
             Parte2 = 2;
           } else {

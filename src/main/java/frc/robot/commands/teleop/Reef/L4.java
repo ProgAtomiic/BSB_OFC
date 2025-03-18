@@ -6,6 +6,7 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.Constants.OperatorConstants;
 import frc.robot.LevelSet;
 import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.ElevatorSubsystem;
@@ -17,6 +18,7 @@ public class L4 extends Command {
   private final SwerveSubsystem swerveSubsystem;
   private final LevelSet levelSet;
   private XboxController Controller;
+  private static final XboxController Controle_0 = new XboxController(OperatorConstants.ControlePrincipal);
 
   double alvo = 67.8;
   int Parte1;
@@ -52,7 +54,10 @@ public class L4 extends Command {
   @Override
   public void execute() {
     
-    System.out.println(Timer.getFPGATimestamp() - TempoGarra);
+    
+    //System.out.println(Timer.getFPGATimestamp() - TempoGarra);
+    System.out.println("angulogarra "+ArmSubsystem.angleget());
+    System.out.println("condicaogara "+CondicaoGarra);
 
     if (levelSet.isAlinhamentoTerminado() == false) {
       switch (Parte1) {
@@ -60,8 +65,8 @@ public class L4 extends Command {
           ElevatorSubsystem.PIDNoFFMaisFF(alvo);
 
           if (ElevatorSubsystem.GetPosicaoElevador() > 7) {
-            ArmSubsystem.angleset(170);
-            if (ArmSubsystem.angleget() > 165 && ArmSubsystem.angleget() < 175
+            ArmSubsystem.angleset(180);
+            if (ArmSubsystem.angleget() > 175 && ArmSubsystem.angleget() < 185
                 && ElevatorSubsystem.GetPosicaoElevador() > 66 && ElevatorSubsystem.GetPosicaoElevador() < 68) {
               Parte1 = 0;
             }
@@ -73,13 +78,13 @@ public class L4 extends Command {
       switch (Parte2) {
 
         case 1:
-        if (ArmSubsystem.angleget() > 165 && ArmSubsystem.angleget() < 175) {
-          ArmSubsystem.angleset(170);
+        if (ArmSubsystem.angleget() > 175 && ArmSubsystem.angleget() < 190) {
+          ArmSubsystem.angleset(185);
           levelSet.setParte1Terminado(true);
           Parte2 = 2;
   
         } else {
-          ArmSubsystem.angleset(170);
+          ArmSubsystem.angleset(180);
         }
 
         break;
@@ -88,7 +93,7 @@ public class L4 extends Command {
 
           // ALTERAÇÃO 2
 
-          if (Controller.getLeftStickButton() == true){
+          if (Controle_0.getLeftStickButton() == true){
             CondicaoGarra = true;
           }
 
@@ -99,6 +104,9 @@ public class L4 extends Command {
           } else if (CondicaoGarra == true){
             ArmSubsystem.angleset(90);
           }
+          else {
+          ArmSubsystem.angleset(180);
+        }
 
           break;
         case 3:

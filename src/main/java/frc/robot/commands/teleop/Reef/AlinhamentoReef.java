@@ -66,6 +66,8 @@ public class AlinhamentoReef extends Command {
     double startEncoder;
 
     double Tolerancia;
+
+    double TempoSeguranca;
     
 
 
@@ -92,6 +94,7 @@ public class AlinhamentoReef extends Command {
 
     @Override
     public void initialize() {
+        TempoSeguranca = 0;
         frc.robot.subsystems.SwerveSubsystem.VelocidadeSwerve = 1; //TODO: TIREI O 0.3 PARA TESTES DA PRIMEIRA PARTIDA
         CaseAlinhamento = 1;
         Tolerancia = 0.01;
@@ -117,6 +120,7 @@ public class AlinhamentoReef extends Command {
 
     @Override
     public void execute() {
+        System.out.println("Casealinhamento" + CaseAlinhamento);
 
 
         // SmartDashboard.putNumber("ROTACAO ERRO: ", RotacaoRobo - 180);
@@ -162,12 +166,13 @@ public class AlinhamentoReef extends Command {
 
 
                          YAtual = bestTarget.getBestCameraToTarget().getY();
-                         if (Math.abs(YAtual) > AlvoY - Tolerancia && Math.abs(YAtual) < AlvoY + Tolerancia) {
+                         if (Math.abs(YAtual) > Math.abs(AlvoY) - Tolerancia && Math.abs(YAtual) < Math.abs(AlvoY) + Tolerancia) {
                             // SwerveSubsystem.getSwerveDrive().drive(new ChassisSpeeds(0, 0, 0));
                             
                             Encoder = SwerveSubsystem.DistanciaEncoder();
                             CaseAlinhamento = 3;
-                           DistanciaAlinhar = (bestTarget.getBestCameraToTarget().getX() - Math.copySign(0.02, bestTarget.getBestCameraToTarget().getX()));
+                            TempoSeguranca = Timer.getFPGATimestamp();
+                            DistanciaAlinhar = (bestTarget.getBestCameraToTarget().getX() - Math.copySign(0.02, bestTarget.getBestCameraToTarget().getX()));
  
                          } else {
                              AjusteLateral = PIDY.calculate(YAtual, AlvoY);
@@ -188,12 +193,14 @@ public class AlinhamentoReef extends Command {
                     LevelSet.setComandoLevelIniciou(true);
                 }
 
-                if (Math.abs((Math.abs((SwerveSubsystem.DistanciaEncoder() - Encoder)) - Math.abs(DistanciaAlinhar))) < 0.03) {
+                if ((Math.abs((Math.abs((SwerveSubsystem.DistanciaEncoder() - Encoder)) - Math.abs(DistanciaAlinhar))) < 0.03) || (Timer.getFPGATimestamp() - TempoSeguranca  > 2)) {
                     AjusteDistancia = 0;
                     SwerveSubsystem.getSwerveDrive().drive(new ChassisSpeeds(0, 0, 0));
                     CaseAlinhamento = 4; 
 
-                } else {
+                }  
+                
+                else {
                     AjusteDistancia = PIDX.calculate(SwerveSubsystem.DistanciaEncoder() - Encoder, -DistanciaAlinhar);
                     SwerveSubsystem.getSwerveDrive().drive(new ChassisSpeeds(MathUtil.clamp(AjusteDistancia, -0.4, 0.4), 0, 0));
                 }

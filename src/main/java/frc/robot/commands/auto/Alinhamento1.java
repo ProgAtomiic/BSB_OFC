@@ -79,7 +79,6 @@ public class Alinhamento1 extends Command {
     @Override
     public void initialize() {
         CaseAlinhamento = 1;
-        LevelSet.selectLevel(4);
         AlvoY = AlinhamentoConstants.Direita;
         startEncoder = Math.abs(SwerveSubsystem.DistanciaEncoder());
 
@@ -87,6 +86,7 @@ public class Alinhamento1 extends Command {
 
     @Override
     public void execute() {
+        System.out.println(CaseAlinhamento);
 
         switch (CaseAlinhamento) { // Bate no reef
 
@@ -122,13 +122,13 @@ public class Alinhamento1 extends Command {
                     }
                 }
                 break;
-
         }
 
     }
 
     @Override
     public void end(boolean interrupted) {
+        Alinhado = false;
     }
 
     @Override

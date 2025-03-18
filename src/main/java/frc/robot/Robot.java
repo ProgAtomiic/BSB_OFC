@@ -8,6 +8,7 @@ import java.util.prefs.Preferences;
 
 import org.photonvision.PhotonUtils;
 
+import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -43,20 +44,14 @@ public class Robot extends TimedRobot {
     
     ArmSubsystem.reset_motor();
     AlgaSubsystem.reset_motor();
+    CameraServer.startAutomaticCapture();
+
 
   }
 
   @Override
   public void robotPeriodic() {
 
-    // System.out.println(Constants.Tag1());
-    // System.out.println(Constants.Tag2());
-
-
-
-
-
-    SmartDashboard.putNumber("Elevador", ElevatorSubsystem.GetPosicaoElevador());
 
     if (ElevatorSubsystem.FimdeCursoBaixo() == false) {
       ElevatorSubsystem.EncoderElevador.setPosition(0);
@@ -80,6 +75,7 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void autonomousInit() {
+    
 
     m_autonomousCommand = m_robotContainer.getAutonomousCommand();
     if (m_autonomousCommand != null) {
@@ -90,64 +86,6 @@ public class Robot extends TimedRobot {
 
   @Override
   public void autonomousPeriodic() {
-    // int AUTO;
-
-    // switch (AUTO) {
-    //   PIDController PID = new PIDController(2.7, 0.0, 0);
-
-    //   case 1:
-    //   PIDController PID = new PIDController(2.7, 0.0, 0);
-
-    //     if(SwerveSubsystem.DistanciaEncoder < 1){
-    //       SwerveSubsystem.getSwerveDrive().drive(new ChassisSpeeds(new ChassisSpeeds(PID.calculate(SwerveSubsystem.DistanciaEncoder, 1), 0, 0)));
-
-    //     }else{
-    //       AUTO = 2;
-    //     }
-    //     break;
-
-    //   case 2: 
-    //   PIDController PID = new PIDController(2.7, 0.0, 0);
-
-    //     if(SwerveSubsystem.DistanciaEncoder < 2){
-    //       SwerveSubsystem.getSwerveDrive().drive(new ChassisSpeeds(new ChassisSpeeds(0, PID.calculate(SwerveSubsystem.DistanciaEncoder, 2), 0)));
-
-    //     }else{
-    //       double TempoAuto = Timer.getFPGATimestamp();
-    //       AUTO = 3;
-    //     }
-    //     break;
-
-    //   case 3: 
-    //   PIDController PID = new PIDController(2.7, 0.0, 0);
-
-    //     if(Timer.getFPGATimestamp() - TempoAuto < 1){
-    //       SwerveSubsystem.getSwerveDrive().drive(new ChassisSpeeds(new ChassisSpeeds(1, 0, 0)));
-
-    //     }else{
-    //       AUTO = 4;
-    //     }
-    //     break;
-
-    //   case 4:
-      
-    //     AutoDireita();
-    //     AUTO = 5;
-    //     break;
-
-    //   case 5:
-    //     PIDController PID = new PIDController(2.7, 0.0, 0);
-
-    //     if(SwerveSubsystem.DistanciaEncoder < 2){
-    //       SwerveSubsystem.getSwerveDrive().drive(new ChassisSpeeds(new ChassisSpeeds(0, PID.calculate(SwerveSubsystem.DistanciaEncoder, 2), 0)));
-    //   }
-      
-
-          
-    //   default:
-    //     break;
-    // }
-
   }
 
   @Override

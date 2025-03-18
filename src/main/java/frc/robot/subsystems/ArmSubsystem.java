@@ -47,7 +47,6 @@ public class ArmSubsystem extends SubsystemBase {
 
     @Override
     public void periodic() {
-  
-        // System.out.println("angulo garra"+angleget()); 
+        System.out.println("angulo garra"+angleget()); 
     }
 }

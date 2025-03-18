@@ -40,8 +40,8 @@ public final class Constants {
   }
 
   public static class AlinhamentoConstants {
-    public static double Esquerda = -0.14; // Qual a distancia do centro da tag
-    public static double Direita = 0.13;
+    public static double Esquerda = -0.18; // Qual a distancia do centro da tag
+    public static double Direita = 0.14;
   }
 
  public static int Tag1(){

@@ -9,18 +9,6 @@
           "data": {
             "pathName": "C1"
           }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "AlinhamentoDireita"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "TRAS C1"
-          }
         }
       ]
     }

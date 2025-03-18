@@ -54,29 +54,29 @@ public class L4_1 extends Command {
   public void execute() {
     
 
-    if (levelSet.isAlinhamentoTerminado() == false) {
       switch (Parte1) {
         case 1:
           ElevatorSubsystem.PIDNoFFMaisFF(alvo);
 
           if (ElevatorSubsystem.GetPosicaoElevador() > 7) {
             ArmSubsystem.angleset(170);
-            if (ArmSubsystem.angleget() > 165 && ArmSubsystem.angleget() < 175 && ElevatorSubsystem.GetPosicaoElevador() > 66 && ElevatorSubsystem.GetPosicaoElevador() < 68) {
-              Parte1 = 0;
+            if (ArmSubsystem.angleget() > 160 && ArmSubsystem.angleget() < 175 && ElevatorSubsystem.GetPosicaoElevador() > 66 && ElevatorSubsystem.GetPosicaoElevador() < 68) {
               levelSet.setLevelTerminado(true);
               
             }
           }
           break;
       }
-    } 
+     
   }
 
   @Override
   public void end(boolean interrupted) {
     Case = 0;
+    Parte1 = 0;
+
     levelSet.setLevel2(false);
-    ArmSubsystem.angleset(90);
+    // ArmSubsystem.angleset(90);
   }
 
   @Override

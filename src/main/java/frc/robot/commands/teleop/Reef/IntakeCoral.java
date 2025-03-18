@@ -53,7 +53,8 @@ public class IntakeCoral extends Command {
   //TODO: Caso continue dando muito conflito, para resolver deve finalizar (colocar um terminado = true) nos comandos --> ambos tira bola e intake de coral
   @Override
   public void execute() {
-    ArmSubsystem.angleset(0);
+
+    ArmSubsystem.angleset(-15);
 
     // System.out.println(tag1);
 

@@ -65,6 +65,8 @@ public class Alinhamento2 extends Command {
 
     double startEncoder;
 
+    double TempoSeguranca;
+
     PIDController PIDX = new PIDController(2.7, 0.0, 0);
     PIDController PIDY = new PIDController(3.9, 0.00, 0.0001);
     // PIDController PIDY = new PIDController(4.3, 0.01, 0.);
@@ -84,6 +86,12 @@ public class Alinhamento2 extends Command {
 
     @Override
     public void initialize() {
+        Servo = 0;
+        Alinhado = false;
+        DistanciaAlinhar= 0;
+        AjusteRotacao = 0;
+        TemDistanciaAlinhar = false;    
+        TempoSeguranca = Timer.getFPGATimestamp();
         CaseAlinhamento = 1;
         LevelSet.selectLevel(4);
         AlvoY = AlinhamentoConstants.Direita;
@@ -104,12 +112,13 @@ public class Alinhamento2 extends Command {
         switch (CaseAlinhamento) { // Bate no reef
 
             case 1: // Anda pra frente
-                if (Math.abs((Math.abs((SwerveSubsystem.DistanciaEncoder() - Encoder)) - Math.abs(DistanciaAlinhar))) < 0.03) {
+                if ((Math.abs((Math.abs((SwerveSubsystem.DistanciaEncoder() - Encoder)) - Math.abs(DistanciaAlinhar))) < 0.03)|| (Timer.getFPGATimestamp() - TempoSeguranca  > 2)) {
                     AjusteDistancia = 0;
                     SwerveSubsystem.getSwerveDrive().drive(new ChassisSpeeds(0, 0, 0));
                     CaseAlinhamento = 2;
 
                 } else {
+                    
                     AjusteDistancia = PIDX.calculate(SwerveSubsystem.DistanciaEncoder() - Encoder, -DistanciaAlinhar);
                     SwerveSubsystem.getSwerveDrive().drive(new ChassisSpeeds(MathUtil.clamp(AjusteDistancia, -0.4, 0.4), 0, 0));
                 }

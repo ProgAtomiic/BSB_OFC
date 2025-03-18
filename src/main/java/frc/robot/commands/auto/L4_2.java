@@ -58,7 +58,7 @@ public class L4_2 extends Command {
       switch (Parte2) {
 
         case 1:
-          if (ArmSubsystem.angleget() > 165 && ArmSubsystem.angleget() < 175) {
+          if (ArmSubsystem.angleget() > 160 && ArmSubsystem.angleget() < 175) {
             ArmSubsystem.angleset(170);
             levelSet.setParte1Terminado(true);
             Parte2 = 3;
@@ -82,13 +82,14 @@ public class L4_2 extends Command {
         case 4:
           ArmSubsystem.angleset(90);
 
-          if (Timer.getFPGATimestamp() - TempoAlinhamento > 1 && Timer.getFPGATimestamp() - TempoAlinhamento < 1.9) {
+          if (Timer.getFPGATimestamp() - TempoAlinhamento > 0.1 && Timer.getFPGATimestamp() - TempoAlinhamento < 0.5) {
             ElevatorSubsystem.LigarMotorArm(0.5);
-            swerveSubsystem.getSwerveDrive().drive(new ChassisSpeeds(0.07, 0, 0));
+            swerveSubsystem.getSwerveDrive().drive(new ChassisSpeeds(0.3, 0, 0));
 
 
-          } else if (Timer.getFPGATimestamp() - TempoAlinhamento > 1.9) {
+          } else if (Timer.getFPGATimestamp() - TempoAlinhamento > 1) {
             ElevatorSubsystem.LigarMotorArm(0);
+            swerveSubsystem.getSwerveDrive().drive(new ChassisSpeeds(0, 0, 0));
             levelSet.setLevelTerminado(true);
 
           }

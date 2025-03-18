@@ -18,6 +18,7 @@ import frc.robot.Constants.OperatorConstants;
 import frc.robot.Constants.SwerveConstants;
 import frc.robot.commands.auto.Alinhamento1;
 import frc.robot.commands.auto.Alinhamento2;
+import frc.robot.commands.auto.AndarFrente;
 import frc.robot.commands.auto.L4_1;
 import frc.robot.commands.auto.L4_2;
 import frc.robot.commands.teleop.Alga.AlinhamentoAlga;
@@ -82,57 +83,62 @@ public class RobotContainer {
         // endregion
         public RobotContainer() {
 
-                NamedCommands.registerCommand("Alinhamento_1", new Alinhamento1(ARM_SUBSYSTEM, m_ElevatorSubsystem, Controle_0, Controle_2, drivebase, m_LevelSet));
-                NamedCommands.registerCommand("Alinhamento_2", new Alinhamento2(ARM_SUBSYSTEM, m_ElevatorSubsystem, Controle_0, Controle_2, drivebase, m_LevelSet));
+                NamedCommands.registerCommand("Alinhamento1", new Alinhamento1(ARM_SUBSYSTEM, m_ElevatorSubsystem,
+                                Controle_0, Controle_2, drivebase, m_LevelSet));
+                NamedCommands.registerCommand("Alinhamento2", new Alinhamento2(ARM_SUBSYSTEM, m_ElevatorSubsystem,
+                                Controle_0, Controle_2, drivebase, m_LevelSet));
 
-                NamedCommands.registerCommand("L4_1", new L4_1(m_ElevatorSubsystem, ARM_SUBSYSTEM, drivebase, m_LevelSet, Controle_0));
-                NamedCommands.registerCommand("L4_2", new L4_2(m_ElevatorSubsystem, ARM_SUBSYSTEM, drivebase, m_LevelSet, Controle_0));
+                NamedCommands.registerCommand("L41",
+                                new L4_1(m_ElevatorSubsystem, ARM_SUBSYSTEM, drivebase, m_LevelSet, Controle_0));
+                NamedCommands.registerCommand("L42",
+                                new L4_2(m_ElevatorSubsystem, ARM_SUBSYSTEM, drivebase, m_LevelSet, Controle_0));
 
                 NamedCommands.registerCommand("ResetLevel", new ResetLevel(m_ElevatorSubsystem, ARM_SUBSYSTEM));
 
+                NamedCommands.registerCommand("L1",
+                                new L1(m_ElevatorSubsystem, ARM_SUBSYSTEM, drivebase, m_LevelSet, Controle_0));
 
-                NamedCommands.registerCommand("L1", new L1(m_ElevatorSubsystem, ARM_SUBSYSTEM, drivebase, m_LevelSet, Controle_0));
-
+                NamedCommands.registerCommand("AndarFrente", new AndarFrente(drivebase));
 
                 configureBindings();
         }
 
         // region Swerve
         SwerveInputStream DriveVelAngular = SwerveInputStream.of(
-                drivebase.getSwerveDrive(),
-                () -> Controle_0.getLeftY() * -1,
-                () -> Controle_0.getLeftX() * -1)
-                .withControllerRotationAxis(Controle_0::getRightX)
-                .deadband(SwerveConstants.ZonaMorta)
-                .scaleTranslation(0.8)
-                .allianceRelativeControl(true);
+                        drivebase.getSwerveDrive(),
+                        () -> Controle_0.getLeftY() * -1,
+                        () -> Controle_0.getLeftX() * -1)
+                        .withControllerRotationAxis(Controle_0::getRightX)
+                        .deadband(SwerveConstants.ZonaMorta)
+                        .scaleTranslation(0.8)
+                        .scaleRotation(0.5)
+                        .allianceRelativeControl(true);
 
-        //Baixa velocidade      
+        // Baixa velocidade
         SwerveInputStream DriveVelAngularLow = SwerveInputStream.of(
-                drivebase.getSwerveDrive(),
-                () -> Controle_0.getLeftY() * -1,
-                () -> Controle_0.getLeftX() * -1)
-                .withControllerRotationAxis(Controle_0::getRightX)
-                .deadband(SwerveConstants.ZonaMorta)
-                .scaleTranslation(0.05)
-                .allianceRelativeControl(true);
+                        drivebase.getSwerveDrive(),
+                        () -> Controle_0.getLeftY() * -1,
+                        () -> Controle_0.getLeftX() * -1)
+                        .withControllerRotationAxis(Controle_0::getRightX)
+                        .deadband(SwerveConstants.ZonaMorta)
+                        .scaleTranslation(0.05)
+                        .scaleRotation(0.08)
+                        .allianceRelativeControl(true);
+
+        SwerveInputStream DriveLow = DriveVelAngularLow.copy().withControllerRotationAxis(
+                        Controle_0::getRightX);
 
         SwerveInputStream driveDirectAngle = DriveVelAngular.copy().withControllerHeadingAxis(
-                Controle_0::getRightX,
-                Controle_0::getRightY)
-                .headingWhile(true);
+                        Controle_0::getRightX,
+                        Controle_0::getRightY)
+                        .headingWhile(true);
 
-        // SwerveInputStream DriveLow = DriveVelAngularLow.copy().withControllerHeadingAxis(
+        // SwerveInputStream DriveLow =
+        // DriveVelAngularLow.copy().withControllerHeadingAxis(
         // Controle_0::getRightX,
         // Controle_0::getRightY)
         // .headingWhile(true);
 
-        SwerveInputStream DriveLow = DriveVelAngularLow.copy().withControllerRotationAxis(
-                Controle_0::getRightX)//TODO: TALVEZ MUDAR PRA LEFTX
-                .headingWhile(true);
-
-
-                
         // Command driveFieldOrientedDirectAngle =
         // drivebase.driveFieldOriented(driveDirectAngle);
         Command driveFieldOrientedAngularVelocity = drivebase.driveFieldOriented(DriveVelAngular);
@@ -148,18 +154,16 @@ public class RobotContainer {
                 new JoystickButton(Controle_0, XboxController.Button.kX.value).toggleOnTrue(driveRobotSlow);
                 new JoystickButton(Controle_2, XboxController.Button.kY.value).onTrue(L1);
 
-
                 // ALGA SUBSYSTEM
                 new Trigger(() -> Controle_0.getLeftTriggerAxis() > 0.25).whileTrue(m_ball_intake);
                 new Trigger(() -> Controle_0.getRightTriggerAxis() > 0.25).whileTrue(m_ball_shooter);
-                new Trigger(() -> Controle_0.getLeftTriggerAxis() < 0.25 && Controle_0.getRightTriggerAxis() < 0.25).whileTrue(m_ball_setpoint);
-
+                new Trigger(() -> Controle_0.getLeftTriggerAxis() < 0.25 && Controle_0.getRightTriggerAxis() < 0.25)
+                                .whileTrue(m_ball_setpoint);
 
                 // ELEVADOR SUBSYSTEM
                 new Trigger(() -> Controle_0.getRightStickButton()).toggleOnTrue(IntakeCoral);
                 new Trigger(() -> Controle_0.getYButton()).toggleOnTrue(TiraBolaAlta);
                 new Trigger(() -> Controle_0.getAButton()).toggleOnTrue(TiraBolaBaixa);
-
 
                 // Esocolha lado
                 new JoystickButton(Controle_0, XboxController.Button.kLeftBumper.value)
@@ -168,10 +172,10 @@ public class RobotContainer {
                 new JoystickButton(Controle_0, XboxController.Button.kRightBumper.value)
                                 .onTrue(new InstantCommand(() -> m_LevelSet.selectSide("Direita")));
 
-                
-
                 MapBotaoLevel.put(new JoystickButton(Controle_2, XboxController.Button.kB.value), 3);
                 MapBotaoLevel.put(new JoystickButton(Controle_2, XboxController.Button.kA.value), 4);
+                MapBotaoLevel.put(new JoystickButton(Controle_2, XboxController.Button.kX.value), 2);
+
 
                 for (Map.Entry<JoystickButton, Integer> entry : MapBotaoLevel.entrySet()) {
                         JoystickButton Botao = entry.getKey();
@@ -183,9 +187,11 @@ public class RobotContainer {
                 }
 
                 new Trigger(() -> m_LevelSet.PodeAlinhar()).onTrue(new InstantCommand(this::ComecaAlinhamento));
-                new Trigger(() -> Controle_0.getStartButton()).onTrue(Commands.runOnce(() -> CommandScheduler.getInstance().cancelAll()));
+                new Trigger(() -> Controle_0.getStartButton())
+                                .onTrue(Commands.runOnce(() -> CommandScheduler.getInstance().cancelAll()));
 
-                new JoystickButton(Controle_2, XboxController.Button.kStart.value).onTrue(Commands.runOnce(() -> drivebase.resetGyro()));
+                new JoystickButton(Controle_2, XboxController.Button.kStart.value)
+                                .onTrue(Commands.runOnce(() -> drivebase.resetGyro()));
         }
 
         private void ComecaAlinhamento() {
@@ -195,8 +201,8 @@ public class RobotContainer {
 
         public Command getAutonomousCommand() {
 
-                // return new PathPlannerAuto("AutonomoOFC1");
-                return new PathPlannerAuto("AutonomoL4");
+                return new PathPlannerAuto("AutonomoOFC2");
+                // return new PathPlannerAuto("AutonomoL4");
                 // return new PathPlannerAuto("AUTOTRAS");
 
                 // return new AUTONOMO(ARM_SUBSYSTEM, m_ElevatorSubsystem, Controle_0,

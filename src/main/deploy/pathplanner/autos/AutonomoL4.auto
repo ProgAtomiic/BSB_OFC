@@ -13,23 +13,29 @@
         {
           "type": "named",
           "data": {
-            "name": " Alinhamento_1"
+            "name": "AndarFrente"
           }
         },
         {
-          "type": "sequential",
+          "type": "named",
+          "data": {
+            "name": "Alinhamento1"
+          }
+        },
+        {
+          "type": "parallel",
           "data": {
             "commands": [
               {
                 "type": "named",
                 "data": {
-                  "name": "Alinhamento_2"
+                  "name": "Alinhamento2"
                 }
               },
               {
                 "type": "named",
                 "data": {
-                  "name": "L4_1"
+                  "name": "L41"
                 }
               }
             ]
@@ -38,7 +44,7 @@
         {
           "type": "named",
           "data": {
-            "name": "L4_2"
+            "name": "L42"
           }
         },
         {
