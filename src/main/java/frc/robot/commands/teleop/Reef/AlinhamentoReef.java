@@ -105,7 +105,7 @@ public class AlinhamentoReef extends Command {
         }
        else if (LevelSet.getLadoEscolhido() == "Esquerda") {
             AlvoY = AlinhamentoConstants.Esquerda;
-            Tolerancia = -0.01;
+            Tolerancia = 0.0115;
 
         } else if (LevelSet.getLadoEscolhido() == "Direita") {
             AlvoY = AlinhamentoConstants.Direita;
@@ -181,7 +181,7 @@ public class AlinhamentoReef extends Command {
                  }
                  break;
 
-                case 3:
+            case 3:
     
                 if (LevelSet.getLevelEscolhido() != 0 && !LevelSet.isComandoLevelIniciou()) {
                     LevelSet.startLevelCommand();

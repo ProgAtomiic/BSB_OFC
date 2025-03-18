@@ -1,4 +1,4 @@
-package frc.robot.commands.teleop.Reef;
+package frc.robot.commands.auto;
 
 import java.util.ArrayList;
 
@@ -7,11 +7,12 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.LevelSet;
+import frc.robot.commands.teleop.Reef.ResetLevel;
 import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.ElevatorSubsystem;
 import frc.robot.subsystems.SwerveSubsystem;
 
-public class L4 extends Command {
+public class L4_2 extends Command {
   private final ElevatorSubsystem Elevator;
   private final ArmSubsystem armSubsystem;
   private final SwerveSubsystem swerveSubsystem;
@@ -30,7 +31,8 @@ public class L4 extends Command {
 
   static ArrayList<Integer> parametros = new ArrayList<>();
 
-  public L4(ElevatorSubsystem Elevator, ArmSubsystem armSubsystem, SwerveSubsystem swerveSubsystem, LevelSet levelSet, XboxController Controller) {
+  public L4_2(ElevatorSubsystem Elevator, ArmSubsystem armSubsystem, SwerveSubsystem swerveSubsystem, LevelSet levelSet,
+      XboxController Controller) {
     this.Elevator = Elevator;
     this.armSubsystem = armSubsystem;
     this.swerveSubsystem = swerveSubsystem;
@@ -51,73 +53,51 @@ public class L4 extends Command {
 
   @Override
   public void execute() {
-    
-    System.out.println(Timer.getFPGATimestamp() - TempoGarra);
 
-    if (levelSet.isAlinhamentoTerminado() == false) {
-      switch (Parte1) {
-        case 1:
-          ElevatorSubsystem.PIDNoFFMaisFF(alvo);
-
-          if (ElevatorSubsystem.GetPosicaoElevador() > 7) {
-            ArmSubsystem.angleset(170);
-            if (ArmSubsystem.angleget() > 165 && ArmSubsystem.angleget() < 175
-                && ElevatorSubsystem.GetPosicaoElevador() > 66 && ElevatorSubsystem.GetPosicaoElevador() < 68) {
-              Parte1 = 0;
-            }
-          }
-          break;
-
-      }
-    } else if (levelSet.isAlinhamentoTerminado() == true) {
+   
       switch (Parte2) {
 
         case 1:
-        if (ArmSubsystem.angleget() > 165 && ArmSubsystem.angleget() < 175) {
-          ArmSubsystem.angleset(170);
-          levelSet.setParte1Terminado(true);
-          Parte2 = 2;
-  
-        } else {
-          ArmSubsystem.angleset(170);
-        }
-
-        break;
-
-        case 2:
-
-          // ALTERAÇÃO 2
-
-          if (Controller.getLeftStickButton() == true){
-            CondicaoGarra = true;
-          }
-
-          //ALTERAACAO 5
-          if (ArmSubsystem.angleget() > 80 && ArmSubsystem.angleget() < 100) {
-            TempoAlinhamento = Timer.getFPGATimestamp();
+          if (ArmSubsystem.angleget() > 165 && ArmSubsystem.angleget() < 175) {
+            ArmSubsystem.angleset(170);
+            levelSet.setParte1Terminado(true);
             Parte2 = 3;
-          } else if (CondicaoGarra == true){
-            ArmSubsystem.angleset(90);
+
+          } else {
+            ArmSubsystem.angleset(170);
           }
 
           break;
-        case 3:
-          ArmSubsystem.angleset(90);
-          
-          if (Timer.getFPGATimestamp() - TempoAlinhamento > 1 && Timer.getFPGATimestamp() - TempoAlinhamento < 1.3) {
-            ElevatorSubsystem.LigarMotorArm(0.5);
 
-          } else if (Timer.getFPGATimestamp() - TempoAlinhamento > 1.3) {
+        case 3:
+          if (ArmSubsystem.angleget() > 80 && ArmSubsystem.angleget() < 95) {
+            TempoAlinhamento = Timer.getFPGATimestamp();
+            Parte2 = 4;
+          } else if (Controller.getLeftStickButton() == true) {
+            ArmSubsystem.angleset(90);
+          }
+
+
+          break;
+        case 4:
+          ArmSubsystem.angleset(90);
+
+          if (Timer.getFPGATimestamp() - TempoAlinhamento > 1 && Timer.getFPGATimestamp() - TempoAlinhamento < 1.9) {
+            ElevatorSubsystem.LigarMotorArm(0.5);
+            swerveSubsystem.getSwerveDrive().drive(new ChassisSpeeds(0.07, 0, 0));
+
+
+          } else if (Timer.getFPGATimestamp() - TempoAlinhamento > 1.9) {
             ElevatorSubsystem.LigarMotorArm(0);
             levelSet.setLevelTerminado(true);
-            
+
           }
 
         default:
           break;
       }
 
-    }
+    
   }
 
   @Override
@@ -126,7 +106,7 @@ public class L4 extends Command {
     Validacao = false;
     levelSet.setLevel2(false);
     ArmSubsystem.angleset(90);
-    new ResetLevel(Elevator, armSubsystem).schedule();
+    // new ResetLevel(Elevator, armSubsystem).schedule();
   }
 
   @Override

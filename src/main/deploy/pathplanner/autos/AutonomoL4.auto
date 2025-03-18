@@ -1,0 +1,56 @@
+{
+  "version": "2025.0",
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "path",
+          "data": {
+            "pathName": "OFC1"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": " Alinhamento_1"
+          }
+        },
+        {
+          "type": "sequential",
+          "data": {
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "Alinhamento_2"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "L4_1"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "L4_2"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "ResetLevel"
+          }
+        }
+      ]
+    }
+  },
+  "resetOdom": true,
+  "folder": null,
+  "choreoAuto": false
+}

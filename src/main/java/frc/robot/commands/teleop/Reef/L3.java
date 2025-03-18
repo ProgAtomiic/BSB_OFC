@@ -22,12 +22,13 @@ public class L3 extends Command {
   double alvo = 30;
   boolean Terminado;
   double TempoAlinhamento;
-  double TempoGarra;
 
   int Parte1;
   int Parte2;
   boolean Validacao;
   int Case;
+
+  boolean CondicaoGarra;
 
   
 
@@ -48,6 +49,8 @@ public class L3 extends Command {
     TempoAlinhamento = 0;
     Parte1 = 1;
     Parte2 = 1;
+    
+    CondicaoGarra = false;
   }
 
   @Override
@@ -88,7 +91,6 @@ public class L3 extends Command {
           if (ArmSubsystem.angleget() > 164 && ArmSubsystem.angleget() < 176) {
             ArmSubsystem.angleset(170);
             levelSet.setParte1Terminado(true);
-            TempoGarra = Timer.getFPGATimestamp();
 
             Parte2 = 2;
           } else {
@@ -97,15 +99,22 @@ public class L3 extends Command {
           break;
 
         case 2:
-          if (ArmSubsystem.angleget() > 83 && ArmSubsystem.angleget() < 97) {
+          if (Controller.getLeftStickButton() == true){
+            CondicaoGarra = true;
+          }
+
+          //ALTERAACAO 5
+          if (ArmSubsystem.angleget() > 80 && ArmSubsystem.angleget() < 100) {
             TempoAlinhamento = Timer.getFPGATimestamp();
             Parte2 = 3;
-          } else {
+          } else if (CondicaoGarra == true){
             ArmSubsystem.angleset(90);
           }
-          break;
 
-        case 4:
+          break;
+        // ALTERACAO 3
+        
+        case 3:
           ArmSubsystem.angleset(90);
           if (Timer.getFPGATimestamp() - TempoAlinhamento > 1 && Timer.getFPGATimestamp() - TempoAlinhamento < 1.3) {
             ElevatorSubsystem.LigarMotorArm(0.5);

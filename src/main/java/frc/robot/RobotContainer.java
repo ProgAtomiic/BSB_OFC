@@ -16,18 +16,21 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.Constants.SwerveConstants;
+import frc.robot.commands.auto.Alinhamento1;
+import frc.robot.commands.auto.Alinhamento2;
+import frc.robot.commands.auto.L4_1;
+import frc.robot.commands.auto.L4_2;
 import frc.robot.commands.teleop.Alga.AlinhamentoAlga;
 import frc.robot.commands.teleop.Alga.BallIntake;
 import frc.robot.commands.teleop.Alga.BallSetPoint;
 import frc.robot.commands.teleop.Alga.BallShooter;
 //CORAL
 import frc.robot.commands.teleop.Reef.AlinhamentoReef;
-import frc.robot.commands.teleop.Reef.AutoDireita;
 import frc.robot.commands.teleop.Reef.IntakeCoral;
 import frc.robot.commands.teleop.Reef.TiraBolaBaixa;
 import frc.robot.commands.teleop.Reef.TiraBolaAlta;
 import frc.robot.commands.teleop.Reef.L1;
-
+import frc.robot.commands.teleop.Reef.ResetLevel;
 //ALGA
 import frc.robot.subsystems.AlgaSubsystem;
 import frc.robot.subsystems.ArmSubsystem;
@@ -79,8 +82,17 @@ public class RobotContainer {
         // endregion
         public RobotContainer() {
 
-                NamedCommands.registerCommand("AlinhamentoDireita", new AutoDireita(ARM_SUBSYSTEM, m_ElevatorSubsystem,Controle_0, Controle_2, drivebase, m_LevelSet));
+                NamedCommands.registerCommand("Alinhamento_1", new Alinhamento1(ARM_SUBSYSTEM, m_ElevatorSubsystem, Controle_0, Controle_2, drivebase, m_LevelSet));
+                NamedCommands.registerCommand("Alinhamento_2", new Alinhamento2(ARM_SUBSYSTEM, m_ElevatorSubsystem, Controle_0, Controle_2, drivebase, m_LevelSet));
+
+                NamedCommands.registerCommand("L4_1", new L4_1(m_ElevatorSubsystem, ARM_SUBSYSTEM, drivebase, m_LevelSet, Controle_0));
+                NamedCommands.registerCommand("L4_2", new L4_2(m_ElevatorSubsystem, ARM_SUBSYSTEM, drivebase, m_LevelSet, Controle_0));
+
+                NamedCommands.registerCommand("ResetLevel", new ResetLevel(m_ElevatorSubsystem, ARM_SUBSYSTEM));
+
+
                 NamedCommands.registerCommand("L1", new L1(m_ElevatorSubsystem, ARM_SUBSYSTEM, drivebase, m_LevelSet, Controle_0));
+
 
                 configureBindings();
         }
@@ -142,15 +154,12 @@ public class RobotContainer {
                 new Trigger(() -> Controle_0.getRightTriggerAxis() > 0.25).whileTrue(m_ball_shooter);
                 new Trigger(() -> Controle_0.getLeftTriggerAxis() < 0.25 && Controle_0.getRightTriggerAxis() < 0.25).whileTrue(m_ball_setpoint);
 
-                // new Trigger(() ->
-                // Controle_0.getLeftStickButton()).onTrue(m_alinhamento_alga);
 
                 // ELEVADOR SUBSYSTEM
                 new Trigger(() -> Controle_0.getRightStickButton()).toggleOnTrue(IntakeCoral);
                 new Trigger(() -> Controle_0.getYButton()).toggleOnTrue(TiraBolaAlta);
                 new Trigger(() -> Controle_0.getAButton()).toggleOnTrue(TiraBolaBaixa);
 
-                // new Trigger(() -> Controle_0.getXButton()).toggleOnTrue(AlinhamentoAlga);
 
                 // Esocolha lado
                 new JoystickButton(Controle_0, XboxController.Button.kLeftBumper.value)
@@ -159,9 +168,8 @@ public class RobotContainer {
                 new JoystickButton(Controle_0, XboxController.Button.kRightBumper.value)
                                 .onTrue(new InstantCommand(() -> m_LevelSet.selectSide("Direita")));
 
-                // MapBotaoLevel.put(new JoystickButton(Controle_0,
-                // XboxController.Button.kX.value), 2);
-                // MapBotaoLevel.put(new JoystickButton(Controle_2, XboxController.Button.kY.value), 1);
+                
+
                 MapBotaoLevel.put(new JoystickButton(Controle_2, XboxController.Button.kB.value), 3);
                 MapBotaoLevel.put(new JoystickButton(Controle_2, XboxController.Button.kA.value), 4);
 
@@ -175,11 +183,9 @@ public class RobotContainer {
                 }
 
                 new Trigger(() -> m_LevelSet.PodeAlinhar()).onTrue(new InstantCommand(this::ComecaAlinhamento));
-                new Trigger(() -> Controle_0.getStartButton())
-                                .onTrue(Commands.runOnce(() -> CommandScheduler.getInstance().cancelAll()));
+                new Trigger(() -> Controle_0.getStartButton()).onTrue(Commands.runOnce(() -> CommandScheduler.getInstance().cancelAll()));
 
-                new JoystickButton(Controle_2, XboxController.Button.kStart.value)
-                                .onTrue(Commands.runOnce(() -> drivebase.resetGyro()));
+                new JoystickButton(Controle_2, XboxController.Button.kStart.value).onTrue(Commands.runOnce(() -> drivebase.resetGyro()));
         }
 
         private void ComecaAlinhamento() {
@@ -189,7 +195,8 @@ public class RobotContainer {
 
         public Command getAutonomousCommand() {
 
-                return new PathPlannerAuto("AutonomoOFC1");
+                // return new PathPlannerAuto("AutonomoOFC1");
+                return new PathPlannerAuto("AutonomoL4");
                 // return new PathPlannerAuto("AUTOTRAS");
 
                 // return new AUTONOMO(ARM_SUBSYSTEM, m_ElevatorSubsystem, Controle_0,

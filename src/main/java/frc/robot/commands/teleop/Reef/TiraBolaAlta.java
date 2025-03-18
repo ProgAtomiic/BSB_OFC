@@ -19,7 +19,7 @@ public class TiraBolaAlta extends Command {
   double TempoSeguranca;
   double alvo = 40;
   int Case = 0;
-  boolean terminado;
+  boolean Terminado;
 
 
   static ArrayList<Integer> parametros = new ArrayList<>();
@@ -33,6 +33,8 @@ public class TiraBolaAlta extends Command {
 
   @Override
   public void initialize() {
+
+    Terminado = false;
   }
 
   //TODO: Caso continue dando muito conflito, para resolver deve finalizar (colocar um terminado = true) nos comandos --> ambos tira bola e intake de coral

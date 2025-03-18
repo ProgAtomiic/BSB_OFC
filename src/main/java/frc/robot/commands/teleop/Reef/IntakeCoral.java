@@ -87,7 +87,8 @@ public class IntakeCoral extends Command {
 
         if (Math.abs(posicaoAtual) < 0.08) {
            ElevatorSubsystem.DesligarElevador();
-           //Terminado = true;
+          //  ALTERACAO 5
+           Terminado = true;
 
         } else {
           ElevatorSubsystem.PIDNoFFMaisFF(0);
